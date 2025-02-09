@@ -1,8 +1,11 @@
+using VoxU_Backend.Core.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddPersistenceLayer(builder.Configuration);
 
 var app = builder.Build();
 
