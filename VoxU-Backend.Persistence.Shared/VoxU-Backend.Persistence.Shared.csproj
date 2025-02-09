@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>VoxU_Backend.Persistence.Shared</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="3.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+		<PackageReference Include="MimeKit" Version="3.3.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+    <ProjectReference Include="..\VoxU-Backend.Core.Application\VoxU-Backend.Core.Application.csproj" />
+    <ProjectReference Include="..\VoxU-Backend.Core.Domain\VoxU-Backend.Core.Domain.csproj" />
+    <ProjectReference Include="..\VoxU-Backend.Core.Persistence\VoxU-Backend.Core.Persistence.csproj" />
+    <ProjectReference Include="..\VoxU-Backend.Pesistence.Identity\VoxU-Backend.Pesistence.Identity.csproj" />
+  </ItemGroup>
+
+</Project>
