@@ -25,11 +25,11 @@ namespace VoxU_Backend.Core.Persistence
             }
             else
             {
-               /* var connectionString = configuration.GetConnectionString("DefaultConnection");
+               var connectionString = configuration.GetConnectionString("DefaultConnection");
                 service.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(connectionString, options => options.MigrationsAssembly(typeof(ApplicationContext).Assembly.FullName)));
                 
-                //Acceso a las opciones de sqlserver y configuro donde se ubicaran las migraciones pasandole el assembly donde se ubica el applicationContext*/
+                //Acceso a las opciones de sqlserver y configuro donde se ubicaran las migraciones pasandole el assembly donde se ubica el applicationContext
             }
 
             service.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
