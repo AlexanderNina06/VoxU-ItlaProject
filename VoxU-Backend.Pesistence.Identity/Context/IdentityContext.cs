@@ -23,7 +23,7 @@ namespace VoxU_Backend.Pesistence.Identity.Context
             base.OnModelCreating(modelbuilder);
 
             //Schema definition 
-            modelbuilder.HasDefaultSchema("IdentitySchema");
+            modelbuilder.HasDefaultSchema("Identity");
 
 
             modelbuilder.Entity<ApplicationUser>().ToTable("Users");

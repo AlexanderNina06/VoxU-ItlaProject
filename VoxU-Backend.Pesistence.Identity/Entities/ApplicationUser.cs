@@ -11,8 +11,8 @@ namespace VoxU_Backend.Pesistence.Identity.Entities
     {
        public string? Name { get; set; }
        public string? LastName { get; set; }
-       public string? CollegeId { get; set; }
-       public string? ProfilePicture { get; set; }
+        public string? User { get; set; }
+        public string? ProfilePicture { get; set; }
        public DateTime? Created_At { get; set; }
     }
 }
