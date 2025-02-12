@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using VoxU_Backend.Core.Application.DTOS.Account;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.Interfaces.Repositories;
 using VoxU_Backend.Core.Application.Interfaces.Services;
@@ -13,13 +14,13 @@ namespace VoxU_Backend.Core.Application.Services
         private readonly IPublicationRepository _publicationRepository;
         private readonly ICommentsRepository _commentsRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly AuthenticationResponse UserSession;
 
         public PublicationService(IMapper mapper, IPublicationRepository publicationRepository, IHttpContextAccessor httpContextAccessor, ICommentsRepository commentsRepository) : base(mapper, publicationRepository)
         {
             _mapper = mapper;
             _publicationRepository = publicationRepository;
             _httpContextAccessor = httpContextAccessor;
-            //UserSession = _httpContextAccessor.HttpContext.Session.Get<AuthenticationResponse>("user");
             //_accountService = accountService;
             _commentsRepository = commentsRepository;
             //_friendsRepository = friendsRepository;
