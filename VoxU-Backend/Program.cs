@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using VoxU_Backend.Core.Persistence;
+using VoxU_Backend.Pesistence.Identity;
 using VoxU_Backend.Pesistence.Identity.Entities;
 using VoxU_Backend.Pesistence.Identity.Seeds;
 
@@ -9,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddPersistenceLayer(builder.Configuration);
-
+builder.Services.AddIdentityLayer(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
