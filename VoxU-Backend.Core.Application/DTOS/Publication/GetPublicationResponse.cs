@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VoxU_Backend.Core.Application.DTOS.Comments;
+
+namespace VoxU_Backend.Core.Application.DTOS.Publication
+{
+    public class GetPublicationResponse
+    {
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public DateTime Created_At { get; set; }
+        public string UserId { get; set; }
+        public ICollection<GetCommentsResponse>? comments { get; set; }
+        public string userPicture { get; set; }
+        public string userName { get; set; }
+        public int CommentsCount { get; set; }
+    }
+}

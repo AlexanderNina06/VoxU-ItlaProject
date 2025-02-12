@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.DTOS.Account;
 using VoxU_Backend.Core.Application.DTOS.Email;
 using VoxU_Backend.Core.Application.Enums;
+using VoxU_Backend.Core.Application.Interfaces.Services;
 using VoxU_Backend.Pesistence.Identity.Entities;
 
 namespace VoxU_Backend.Pesistence.Identity.Service
 {
-    public class AccountService
+    public class AccountService : IAccountService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
