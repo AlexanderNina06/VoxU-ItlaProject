@@ -11,11 +11,11 @@ namespace VoxU_Backend.Core.Application.DTOS.Publication
         [Required(ErrorMessage = "Debe de Insertar una Descripcion"), DataType(DataType.Text)]
         public string Description { get; set; }
 
-        public string? ImageUrl { get; set; }
-        public IFormFile? ImageFile { get; set; }
+        [Required(ErrorMessage = "Debe de Insertar una Descripcion"), DataType(DataType.Text)]
+        public byte[]? ImageUrl { get; set; }
         public DateTime Created_At { get; set; }
         public string? UserId { get; set; }
-        public string? userPicture { get; set; }
+        public byte[]? userPicture { get; set; }
         public string? userName { get; set; }
     }
 }

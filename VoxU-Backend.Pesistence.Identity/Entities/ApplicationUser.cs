@@ -9,10 +9,12 @@ namespace VoxU_Backend.Pesistence.Identity.Entities
 {
     public class ApplicationUser : IdentityUser
     {
-       public string? Name { get; set; }
-       public string? LastName { get; set; }
+        //UserName va a representar la matricula
+        // User Va a representar el nombre de usuario
+        public string? Name { get; set; }
+        public string? LastName { get; set; }
         public string? User { get; set; }
-        public string? ProfilePicture { get; set; }
-       public DateTime? Created_At { get; set; }
+        public byte[]? ProfilePicture { get; set; }
+        public DateTime? Created_At { get; set; }
     }
 }

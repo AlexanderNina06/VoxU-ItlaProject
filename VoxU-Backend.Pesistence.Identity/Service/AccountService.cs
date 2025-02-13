@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Org.BouncyCastle.Crypto.Paddings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -226,7 +227,7 @@ namespace VoxU_Backend.Pesistence.Identity.Service
 
 
         //Update user/account
-        public async Task<string> UpdateImage(string UserId, string ImageLocation)
+        public async Task<string> UpdateImage(string UserId, byte[] ImageLocation)
         {
             var editedUser = await _userManager.FindByIdAsync(UserId);
             editedUser.ProfilePicture = ImageLocation;
@@ -269,17 +270,18 @@ namespace VoxU_Backend.Pesistence.Identity.Service
         //}
 
         //Find Image By UserId
-        public async Task<string> FindImageUserId(string userId)
+        public async Task<byte[]> FindImageUserId(string userId)
         {
 
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
-                return "No Picture";
+                byte[] bytes1 = new byte[1];
+                return bytes1;
             }
 
-            string profilePicture = user.ProfilePicture;
+            byte[] profilePicture = user.ProfilePicture;
             return profilePicture;
 
         }
