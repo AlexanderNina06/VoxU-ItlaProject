@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddPersistenceLayer(builder.Configuration);
 builder.Services.AddIdentityLayer(builder.Configuration);
+builder.Services.AddPersistenceLayer(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
