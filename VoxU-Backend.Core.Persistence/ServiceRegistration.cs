@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.Interfaces.Repositories;
+using VoxU_Backend.Core.Application.Interfaces.Services;
+using VoxU_Backend.Core.Application.Services;
 using VoxU_Backend.Core.Persistence.Contexts;
 using VoxU_Backend.Core.Persistence.Repositories;
 
@@ -35,7 +37,8 @@ namespace VoxU_Backend.Core.Persistence
             service.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             service.AddTransient<IPublicationRepository, PublicationsRepository>();
             service.AddTransient<ICommentsRepository, CommentsRepository>();
-            
+            service.AddTransient<IRepliesService, RepliesService>();
+
         }
 
     }

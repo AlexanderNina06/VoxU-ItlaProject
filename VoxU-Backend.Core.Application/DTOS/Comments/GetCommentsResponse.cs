@@ -16,7 +16,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Comments
         public string CommentUserPicture { get; set; }
         public string CommentUserName { get; set; }
 
-        public int IdPublication { get; set; }
+        public int? IdPublication { get; set; }
         public GetPublicationResponse? publications { get; set; }
         public ICollection<GetRepliesReponse>? replies { get; set; }
     }
