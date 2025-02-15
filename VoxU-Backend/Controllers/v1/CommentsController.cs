@@ -12,8 +12,8 @@ namespace VoxU_Backend.Controllers.v1
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        private readonly ICommentsService _commentsService;
-        public CommentsController(ICommentsService commentsService)
+        private readonly ICommentService _commentsService;
+        public CommentsController(ICommentService commentsService)
         {
             _commentsService = commentsService;
         }

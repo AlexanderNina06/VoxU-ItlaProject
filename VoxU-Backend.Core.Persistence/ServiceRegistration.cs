@@ -36,8 +36,9 @@ namespace VoxU_Backend.Core.Persistence
 
             service.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             service.AddTransient<IPublicationRepository, PublicationsRepository>();
+            service.AddTransient<ISellPublicationsRepository, SellPublicationsRepository>();
             service.AddTransient<ICommentsRepository, CommentsRepository>();
-            service.AddTransient<IRepliesService, RepliesService>();
+            service.AddTransient<IRepliesRepository, RepliesRepository>();
 
         }
 
