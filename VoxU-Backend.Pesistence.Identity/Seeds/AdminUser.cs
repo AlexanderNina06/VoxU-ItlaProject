@@ -17,7 +17,7 @@ namespace VoxU_Backend.Pesistence.Identity.Seeds
             user.EmailConfirmed = true;
             user.PhoneNumber = "809-236-2155";
             user.PhoneNumberConfirmed = true;
-            user.ProfilePicture = "https://th.bing.com/th/id/R.f6cfbed7dd27ab87a330f905ac3d95a3?rik=n1ZTdyVp2HWn%2bw&riu=http%3a%2f%2fwww.musicnewstime.com%2fwp-content%2fuploads%2f2011%2f07%2fenrique-iglesias.jpg&ehk=bkNQ5B7biT3ehhaEWO4FrWqiC1Zy%2bbzWSrn238%2fyAc8%3d&risl=&pid=ImgRaw&r=0";
+            user.ProfilePicture = null;
             user.Created_At = DateTime.Now;
             
             if (userManager.Users.All(u => u.Id != user.Id))

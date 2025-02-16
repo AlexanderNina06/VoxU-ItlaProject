@@ -14,7 +14,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Account
         public string? Name { get; set; }
         public string? LastName { get; set; }
         public string? User { get; set; }
-        public string? ProfilePicture { get; set; }
+        public byte[]? ProfilePicture { get; set; }
         public DateTime? Created_At { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }

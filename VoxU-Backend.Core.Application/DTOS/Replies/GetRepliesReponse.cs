@@ -12,7 +12,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Replies
         public int Id { get; set; }
         public string Reply { get; set; }
         public string UserId { get; set; }
-        public string ReplyUserPicture { get; set; }
+        public byte[] ReplyUserPicture { get; set; }
         public string ReplyUserName { get; set; }
         public int CommentId { get; set; }
         public GetCommentsResponse? Comments { get; set; }

@@ -37,13 +37,13 @@ namespace VoxU_Backend.Pesistence.Identity
             Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
 
             Services.AddAuthentication();
-            Services.AddTransient<IAccountService, AccountService>();
+            Services.AddScoped<IAccountService, AccountService>();
 
-            Services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/User";
-                options.AccessDeniedPath = "/User/AccessDenied";
-            });
+            //Services.ConfigureApplicationCookie(options =>
+            //{
+            //    options.LoginPath = "/User";
+            //    options.AccessDeniedPath = "/User/AccessDenied";
+            //});
         }
 
     }

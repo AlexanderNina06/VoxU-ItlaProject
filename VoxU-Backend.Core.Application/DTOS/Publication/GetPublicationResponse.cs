@@ -11,11 +11,11 @@ namespace VoxU_Backend.Core.Application.DTOS.Publication
     {
         public int Id { get; set; }
         public string Description { get; set; }
-        public string? ImageUrl { get; set; }
+        public byte[]? ImageUrl { get; set; }
         public DateTime Created_At { get; set; }
         public string UserId { get; set; }
         public ICollection<GetCommentsResponse>? comments { get; set; }
-        public string userPicture { get; set; }
+        public byte[] userPicture { get; set; }
         public string userName { get; set; }
         public int CommentsCount { get; set; }
     }

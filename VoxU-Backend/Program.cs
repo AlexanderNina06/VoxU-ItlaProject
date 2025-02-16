@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using VoxU_Backend.Core.Persistence;
+using VoxU_Backend.Extensions;
 using VoxU_Backend.Pesistence.Identity;
 using VoxU_Backend.Pesistence.Identity.Entities;
 using VoxU_Backend.Pesistence.Identity.Seeds;
@@ -9,9 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddPersistenceLayer(builder.Configuration);
-builder.Services.AddIdentityLayer(builder.Configuration);
+//builder.Services.AddIdentityLayer(builder.Configuration);
 builder.Services.AddPersistenceLayer(builder.Configuration);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerExtension();
+builder.Services.AddApiVersioningExtension();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,10 +49,25 @@ using (var scope = app.Services.CreateScope()) // Cada vez que hacemos injeccion
 
 
 }
+
+//Swagger
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 app.UseHttpsRedirection();
+
+app.UserSwaggerExtension();
+//app.UseHealthChecks("/health");
+app.UseHealthChecks("/health");
+app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

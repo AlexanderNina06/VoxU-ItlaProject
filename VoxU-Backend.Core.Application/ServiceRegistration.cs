@@ -17,8 +17,10 @@ namespace VoxU_Backend.Core.Application
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddTransient<IPublicationService, PublicationService>();
+            services.AddTransient<ISellpublicationService, SellPublicationService>();
             services.AddTransient<ICommentService, CommentsService>();
             services.AddTransient<IRepliesService, RepliesService>();
+
 
         }
 
