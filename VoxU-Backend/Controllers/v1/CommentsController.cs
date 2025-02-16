@@ -8,6 +8,7 @@ using VoxU_Backend.Core.Application.Services;
 
 namespace VoxU_Backend.Controllers.v1
 {
+    [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
@@ -22,7 +23,7 @@ namespace VoxU_Backend.Controllers.v1
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet]
+        [HttpGet()]
         public async Task<IActionResult> Get()
         {
 
@@ -37,11 +38,11 @@ namespace VoxU_Backend.Controllers.v1
 
         }
 
+
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet]
-        [HttpGet("{id}")]
         public async Task<IActionResult> GetPublicationById([FromQuery] int id)
         {
 

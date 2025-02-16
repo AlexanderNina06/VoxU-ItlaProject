@@ -8,6 +8,7 @@ using VoxU_Backend.Core.Domain.Entities;
 
 namespace VoxU_Backend.Controllers.v1
 {
+    [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [ApiController]
     public class PublicationsController : ControllerBase
@@ -39,7 +40,6 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPublicationById([FromQuery]int id)
         {

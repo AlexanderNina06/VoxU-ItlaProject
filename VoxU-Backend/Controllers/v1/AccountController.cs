@@ -2,9 +2,12 @@
 
 namespace VoxU_Backend.Controllers.v1
 {
-    [ApiController()]
+    [ApiVersion("1.0")]
+    [Route("api/[controller]")]
+    [ApiController]
     public class AccountController : ControllerBase
     {
+        [HttpGet]
         public IActionResult Index()
         {
             return Ok();
