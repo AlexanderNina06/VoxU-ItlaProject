@@ -16,7 +16,6 @@ namespace VoxU_Backend.Core.Application.Mapper
         public GeneralProfile()
         {
 
-
             //Publications
             CreateMap<Publications, SavePublicationRequest>()
                 .ReverseMap()
@@ -30,9 +29,8 @@ namespace VoxU_Backend.Core.Application.Mapper
 
             //Comments
             CreateMap<Comments, SaveCommentsRequest>()
-                .ForMember(dest => dest.publications, opt => opt.Ignore())
-          
-               .ReverseMap();
+               .ReverseMap()
+               .ForMember(dest => dest.replies, opt => opt.Ignore());
                
 
             CreateMap<Comments, GetCommentsResponse>()

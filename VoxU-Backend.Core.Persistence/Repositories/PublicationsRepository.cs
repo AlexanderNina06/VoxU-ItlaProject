@@ -7,7 +7,7 @@ namespace VoxU_Backend.Core.Persistence.Repositories
 {
     public class PublicationsRepository : GenericRepository<Publications>, IPublicationRepository
     {
-        private ApplicationContext _context;    
+        private readonly ApplicationContext _context;    
         public PublicationsRepository(ApplicationContext applicationContext) : base(applicationContext)
         {
             _context = applicationContext;

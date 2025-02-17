@@ -12,8 +12,8 @@ using VoxU_Backend.Core.Persistence.Contexts;
 namespace VoxU_Backend.Core.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20250209223739_InitialMigrations")]
-    partial class InitialMigrations
+    [Migration("20250217002442_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,8 +38,8 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                     b.Property<string>("CommentUserName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CommentUserPicture")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("CommentUserPicture")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int?>("IdPublication")
                         .HasColumnType("int");
@@ -68,21 +68,51 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("ImageUrl")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("userName")
-                        .HasColumnType("int");
+                    b.Property<string>("userName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("userPicture")
-                        .HasColumnType("int");
+                    b.Property<byte[]>("userPicture")
+                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Publications", (string)null);
+                });
+
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Replies", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reply")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReplyUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ReplyUserPicture")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("Replies", (string)null);
                 });
 
             modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.SellPublications", b =>
@@ -99,8 +129,8 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("ImageUrl")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Place")
                         .HasColumnType("nvarchar(max)");
@@ -111,11 +141,11 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("userName")
-                        .HasColumnType("int");
+                    b.Property<string>("userName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("userPicture")
-                        .HasColumnType("int");
+                    b.Property<byte[]>("userPicture")
+                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
 
@@ -129,6 +159,22 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                         .HasForeignKey("IdPublication");
 
                     b.Navigation("Publications");
+                });
+
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Replies", b =>
+                {
+                    b.HasOne("VoxU_Backend.Core.Domain.Entities.Comments", "Comments")
+                        .WithMany("replies")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Comments", b =>
+                {
+                    b.Navigation("replies");
                 });
 
             modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Publications", b =>

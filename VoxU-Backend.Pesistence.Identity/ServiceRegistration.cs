@@ -37,7 +37,7 @@ namespace VoxU_Backend.Pesistence.Identity
             Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
 
             Services.AddAuthentication();
-            Services.AddScoped<IAccountService, AccountService>();
+            Services.AddTransient<IAccountService, AccountService>();
 
             //Services.ConfigureApplicationCookie(options =>
             //{

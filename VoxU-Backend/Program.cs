@@ -4,6 +4,7 @@ using VoxU_Backend.Extensions;
 using VoxU_Backend.Pesistence.Identity;
 using VoxU_Backend.Pesistence.Identity.Entities;
 using VoxU_Backend.Pesistence.Identity.Seeds;
+using VoxU_Backend.Core.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistenceLayer(builder.Configuration);
 //builder.Services.AddIdentityLayer(builder.Configuration);
-builder.Services.AddPersistenceLayer(builder.Configuration);
+builder.Services.AddApplicationLayer();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerExtension();
