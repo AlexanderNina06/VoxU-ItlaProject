@@ -6,7 +6,7 @@ namespace VoxU_Backend.Core.Persistence.Repositories
 {
     public class CommentsRepository : GenericRepository<Comments>, ICommentsRepository
     {
-        private ApplicationContext _context;
+        private readonly ApplicationContext _context;
 
         public CommentsRepository(ApplicationContext applicationContext) : base(applicationContext)
         {

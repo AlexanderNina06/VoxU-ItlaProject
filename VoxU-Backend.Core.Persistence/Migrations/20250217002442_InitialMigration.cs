@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace VoxU_Backend.Core.Persistence.Migrations
 {
-    public partial class InitialMigrations : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,11 +16,11 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    userPicture = table.Column<int>(type: "int", nullable: true),
-                    userName = table.Column<int>(type: "int", nullable: true)
+                    userPicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    userName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -34,11 +34,11 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Created_At = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    userPicture = table.Column<int>(type: "int", nullable: true),
-                    userName = table.Column<int>(type: "int", nullable: true),
+                    userPicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    userName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<double>(type: "float", nullable: true),
                     Place = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -55,7 +55,7 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CommentUserPicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CommentUserPicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     CommentUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdPublication = table.Column<int>(type: "int", nullable: true)
                 },
@@ -69,19 +69,50 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Replies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Reply = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReplyUserPicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ReplyUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CommentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Replies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Replies_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_IdPublication",
                 table: "Comments",
                 column: "IdPublication");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Replies_CommentId",
+                table: "Replies",
+                column: "CommentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Replies");
 
             migrationBuilder.DropTable(
                 name: "SellPublications");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Publications");
