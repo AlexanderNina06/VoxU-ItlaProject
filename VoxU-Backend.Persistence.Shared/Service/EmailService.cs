@@ -7,11 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.DTOS.Email;
+using VoxU_Backend.Core.Application.Interfaces.Services;
 using VoxU_Backend.Core.Domain.Settings;
 
 namespace VoxU_Backend.Persistence.Shared.Service
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
         private readonly MailSettings _mailSettings;
 
