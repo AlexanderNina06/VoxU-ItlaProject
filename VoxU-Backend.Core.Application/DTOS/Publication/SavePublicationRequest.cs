@@ -13,7 +13,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Publication
         public byte[]? ImageUrl { get; set; }
 
         public IFormFile imageFile { get; set; }   
-        public DateTime Created_At { get; set; }
+        public DateTime  Created_At => DateTime.Now;
         public string? UserId { get; set; }
         public byte[]? userPicture { get; set; }
         public string? userName { get; set; }
