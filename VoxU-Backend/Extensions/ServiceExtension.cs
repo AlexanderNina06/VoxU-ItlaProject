@@ -30,6 +30,33 @@ namespace VoxU_Backend.Extensions
 
                 options.DescribeAllParametersInCamelCase();
 
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    Description = "Input your bearer token using the following format: Bearer {Input your token here}"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer" // Apuntamos a la configuracion de security que realizamos arriba,
+                            },
+                            Scheme = "Bearer",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+
+                        }, new List<string>()
+                    }
+                });
             });
 
         }

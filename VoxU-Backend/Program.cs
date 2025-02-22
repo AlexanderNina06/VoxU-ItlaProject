@@ -5,6 +5,7 @@ using VoxU_Backend.Pesistence.Identity;
 using VoxU_Backend.Pesistence.Identity.Entities;
 using VoxU_Backend.Pesistence.Identity.Seeds;
 using VoxU_Backend.Core.Application;
+using VoxU_Backend.Persistence.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +16,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistenceLayer(builder.Configuration);
-//builder.Services.AddIdentityLayer(builder.Configuration);
 builder.Services.AddApplicationLayer();
+builder.Services.AddSharedLayer(builder.Configuration);
+builder.Services.AddIdentityLayer(builder.Configuration);
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerExtension();
@@ -60,7 +63,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UserSwaggerExtension();
-//app.UseHealthChecks("/health");
 app.UseHealthChecks("/health");
 app.UseRouting();
 

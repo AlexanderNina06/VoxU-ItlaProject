@@ -95,7 +95,7 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut]
-        public async Task<IActionResult> Put(SaveCommentsRequest request)
+        public async Task<IActionResult> Put(SaveCommentsRequest request, int Id)
         {
 
             try
@@ -105,7 +105,7 @@ namespace VoxU_Backend.Controllers.v1
                     return BadRequest(request);
                 }
 
-                await _commentsService.UpdateAsyncVm(request, request.Id);
+                await _commentsService.UpdateAsyncVm(request, Id);
                 return Ok(request);
 
             }

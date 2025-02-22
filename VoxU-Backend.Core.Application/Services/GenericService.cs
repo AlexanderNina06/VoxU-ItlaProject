@@ -24,11 +24,11 @@ namespace VoxU_Backend.Core.Application.Services
             var VmList = _mapper.Map<List<ViewModel>>(entities);
             return VmList;
         }
-        public virtual async Task<SaveViewModel> GetVmById(int Id)
+        public virtual async Task<ViewModel> GetVmById(int Id)
         {
             Entity Entity = await _genericRepository.GetById(Id);
 
-            SaveViewModel Vm = _mapper.Map<SaveViewModel>(Entity);
+            ViewModel Vm = _mapper.Map<ViewModel>(Entity);
 
             return Vm;
         }
