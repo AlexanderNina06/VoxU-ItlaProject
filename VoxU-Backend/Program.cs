@@ -41,7 +41,7 @@ using (var scope = app.Services.CreateScope()) // Cada vez que hacemos injeccion
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
         // Ahora creamos los roles primero antes que los usuarios
-
+        await DefaultRoles.AddDefaultRoles(roleManager);
         await BasicUser.SeedAsync(userManager, roleManager);
         await AdminUser.SeedAsync(userManager, roleManager);
 

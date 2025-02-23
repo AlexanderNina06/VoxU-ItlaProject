@@ -45,8 +45,8 @@ namespace VoxU_Backend.Controllers.v1
             return Ok(await _accountService.ForgotPasswordAsync(request, origin));
         }
 
-        [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPasswordAsync(ResetPassword request)
+        [HttpGet("ResetPassword")]
+        public async Task<IActionResult> ResetPasswordAsync([FromQuery]ResetPassword request)
         {
             return Ok(await _accountService.ResetPasswordAsync(request));
         }
