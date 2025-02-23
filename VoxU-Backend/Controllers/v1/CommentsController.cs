@@ -14,9 +14,11 @@ namespace VoxU_Backend.Controllers.v1
     public class CommentsController : ControllerBase
     {
         private readonly ICommentService _commentsService;
-        public CommentsController(ICommentService commentsService)
+        private readonly IAccountService _accountService;
+        public CommentsController(ICommentService commentsService, IAccountService accountService)
         {
             _commentsService = commentsService;
+            _accountService = accountService;
         }
 
 
@@ -74,10 +76,13 @@ namespace VoxU_Backend.Controllers.v1
 
             try
             {
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(saveCommentsRequest);
                 }
+
+                saveCommentsRequest.CommentUserPicture = await _accountService.FindImageUserId(saveCommentsRequest.UserId);
 
                 await _commentsService.AddAsyncVm(saveCommentsRequest);
                 return Created();

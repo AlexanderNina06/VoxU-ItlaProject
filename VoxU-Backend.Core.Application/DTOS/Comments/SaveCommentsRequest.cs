@@ -9,9 +9,7 @@ using VoxU_Backend.Core.Application.DTOS.Publication;
 namespace VoxU_Backend.Core.Application.DTOS.Comments
 {
     public class SaveCommentsRequest
-    {
-        public int Id { get; set; }
-
+    { 
         [Required(ErrorMessage = "Debe de insertar un comentario !"), DataType(DataType.Text)]
         public string Comment { get; set; }
         public string UserId { get; set; }
