@@ -176,6 +176,16 @@ namespace VoxU_Backend.Pesistence.Identity.Service
                 return response;
             }
 
+
+            var emailUser = await _userManager.FindByEmailAsync(registerRequest.Email);
+
+            if (user != emailUser)
+            {
+                response.HasError = true;
+                response.Error = $"The email: {registerRequest.Email} already exist, try another email !";
+                return response;
+            }
+
             //Add New User
             ApplicationUser newUser = new();
             newUser.UserName = registerRequest.collegeId;
@@ -301,7 +311,7 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             // Genero un token de solicitud de cambio de password
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code)); // Encodeamos el token asociado a usuario para poder agregarselo a la url
-            var route = "User/ResetPassword"; // Ruta donde ira -- controlador/action
+            var route = "api/Account/ResetPassword"; // Ruta donde ira -- controlador/action
             var Uri = new Uri(string.Concat($"{origin}/", route)); // Concatemos el origen y la ruta
             var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "token", code);
 
@@ -316,7 +326,7 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             //Logica para enviar un codigo con token de confirmacion para activar/validar cuentas
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code)); // Encodeamos el token asociado a usuario para poder agregarselo a la url
-            var route = "User/ConfirmEmail";
+            var route = "api/Account/ConfirmEmail";
             var Uri = new Uri(string.Concat($"{origin}/", route)); // Concatemos el origen y la ruta
             var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "userId", user.Id); // Agregamos el userId y el token de confirmacion 
             verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", code);
