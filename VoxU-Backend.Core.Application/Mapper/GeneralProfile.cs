@@ -18,33 +18,37 @@ namespace VoxU_Backend.Core.Application.Mapper
 
             //Publications
             CreateMap<Publications, SavePublicationRequest>()
+                .ForMember(dest => dest.imageFile, opt => opt.Ignore())
                 .ReverseMap()
               .ForMember(dest => dest.Comments, opt => opt.Ignore());
 
             CreateMap<Publications, GetPublicationResponse>()
-             .ForMember(dest => dest.userPicture, opt => opt.Ignore())
-             .ForMember(dest => dest.userName, opt => opt.Ignore())
              .ForMember(dest => dest.CommentsCount, opt => opt.Ignore())
+             .ForMember(dest => dest.Comments, opt => opt.Ignore())
              .ReverseMap();
 
             //Comments
             CreateMap<Comments, SaveCommentsRequest>()
                .ReverseMap()
-               .ForMember(dest => dest.replies, opt => opt.Ignore());
+               .ForMember(dest => dest.replies, opt => opt.Ignore())
+               .ForMember(dest => dest.Publications, opt => opt.Ignore());
                
 
             CreateMap<Comments, GetCommentsResponse>()
-             .ReverseMap();
+             .ReverseMap()
+             .ForMember(dest => dest.replies, opt => opt.Ignore())
+             .ForMember(dest => dest.Publications, opt => opt.Ignore());
 
             //Replies
 
             CreateMap<Replies, SaveRepliesRequest>()
                 .ReverseMap()
-               .ForMember(dest => dest.Id, opt => opt.Ignore())
                .ForMember(dest => dest.Comments, opt => opt.Ignore());
 
             CreateMap<Replies, GetRepliesReponse>()
-             .ReverseMap();
+                .ForMember(dest => dest.Comments, opt => opt.Ignore())
+               .ReverseMap()
+               .ForMember(dest => dest.Comments, opt => opt.Ignore()); ;
         }
     }
 }

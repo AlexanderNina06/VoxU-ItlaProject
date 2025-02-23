@@ -1,15 +1,22 @@
 ﻿using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Paddings;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.DTOS.Account;
 using VoxU_Backend.Core.Application.DTOS.Email;
 using VoxU_Backend.Core.Application.Enums;
 using VoxU_Backend.Core.Application.Interfaces.Services;
+using VoxU_Backend.Core.Domain.Settings;
 using VoxU_Backend.Pesistence.Identity.Entities;
 
 namespace VoxU_Backend.Pesistence.Identity.Service
@@ -19,15 +26,18 @@ namespace VoxU_Backend.Pesistence.Identity.Service
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailService;
+        private readonly JWTSettings _JwtSettings;
 
-        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService)
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService, IOptions<JWTSettings> jwt)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _JwtSettings = jwt.Value;
         }
 
 
+        #region Log in/out
         //Authenticate
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest authenticationRequest)
         {
@@ -69,16 +79,87 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             Response.PhoneNumber = user.PhoneNumber;
             Response.IsVerified = user.EmailConfirmed;
             Response.Email = user.Email;
+
+            var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+            Response.Roles = rolesList.ToList();
+            Response.IsVerified = user.EmailConfirmed;
+            JwtSecurityToken Jwtoken = await GenerateJWToken(user);
+            Response.JWToken = new JwtSecurityTokenHandler().WriteToken(Jwtoken);
+            var refreshToken = GetRefreshToken();
+            Response.RefreshToken = refreshToken.Token;
+
             return Response;
         }
-
+       
         //LogOut
         public async Task LogOut()
         {
             await _signInManager.SignOutAsync();
         }
 
+        #endregion
 
+        #region JWT
+        private async Task<JwtSecurityToken> GenerateJWToken(ApplicationUser user)
+        {
+            //El token que generaremos debe de tener la info del usuario
+
+            var userClaims = await _userManager.GetClaimsAsync(user); //Los claims son comos los permisos del usuarios
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var roleClaims = new List<Claim>();
+
+            //Por cada role que tenga el usuario agregaremos un claim con ese rol
+            foreach (var role in roles)
+            {
+                roleClaims.Add(new Claim("roles", role));
+            }
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, new Guid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("uid", user.Id)
+
+            }.Union(userClaims).Union(roleClaims);
+
+            //Para crear un token con seguridad se necesitan dos elementos, Los SignInCredentials y el symetricSecurityTeam
+
+            var symmectricSecuritykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_JwtSettings.Key)); // Recuperamos el key y lo encondeamos
+            var signInCredentials = new SigningCredentials(symmectricSecuritykey, SecurityAlgorithms.HmacSha256); // Para recuperar el signInCredential se necesita del 
+                                                                                                                  //Security key y el metodo de encriptacion
+
+            //Creando el token
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: _JwtSettings.Issuer,
+                audience: _JwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(_JwtSettings.DurationInMinutes),
+                signingCredentials: signInCredentials);
+
+            return jwtSecurityToken;
+        }
+        private string RandomTokenString()
+        {
+            using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
+            var randomBytes = new byte[40];
+            rngCryptoServiceProvider.GetBytes(randomBytes);
+
+            return BitConverter.ToString(randomBytes).Replace("-", "");
+        }
+        private RefreshToken GetRefreshToken()
+        {
+            return new RefreshToken
+            {
+                Token = RandomTokenString(),
+                Created = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+        }
+        #endregion
+
+        #region RegisterProcess
         //Register
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest registerRequest, string origin)
         {
@@ -111,7 +192,7 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(newUser, Roles.Basic.ToString());
-                var emailVerificationUri = await GetConfirmAccountUri(newUser, origin);
+                var emailVerificationUri = await SendVerificationEmailUri(newUser, origin);
                 await _emailService.SendAsync(new EmailRequest
                 {
                     To = registerRequest.Email,
@@ -124,13 +205,12 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             if (!result.Succeeded)
             {
                 response.HasError = true;
-                response.Error = $"There was an error while attempting to register the user";
+                response.Error = $"There was an error while attempting to register the user ";
                 return response;
             }
 
             return response;
         }
-
 
 
         //ConfirmAccount
@@ -156,74 +236,98 @@ namespace VoxU_Backend.Pesistence.Identity.Service
 
         }
 
-        //SendNewPassword
-        public async Task<SendNewPasswordResponse> SendNewPasswordToEmail(SendNewPasswordRequest newPasswordRequest)
+        //Forgot Password -- enviar correo con url para reset Password
+        public async Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPassword passwordRequest, string origin)
         {
-            SendNewPasswordResponse response = new();
+            ForgotPasswordResponse response = new();
             response.HasError = false;
 
-            var user = await _userManager.FindByNameAsync(newPasswordRequest.CollegeId);
+            var accountExist = await _userManager.FindByEmailAsync(passwordRequest.Email);
 
-            if (user == null)
+            if (accountExist == null)
             {
                 response.HasError = true;
-                response.Error = $"The user {newPasswordRequest.CollegeId} does not exists !";
-                return response;
+                response.Error = $"No account exits with the requested email: {passwordRequest.Email}";
             }
 
-            // generate and assign to the user a new password 
-            var newPassword = Guid.NewGuid().ToString().Substring(1, 16);
-            var oldPassword = newPasswordRequest.OldPassword;
+            var resetPasswordUri = await SendForgotPasswordUri(accountExist, origin);
+            await _emailService.SendAsync(new EmailRequest
+            {
+                To = accountExist.Email,
+                Body = $"Please reset your password by clicking on this url {resetPasswordUri}",
+                Subject = "Password Reset"
+            });
 
-            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            return response;
+
+
+        }
+
+        //Metodo para resetear el password
+        public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPassword passwordRequest)
+        {
+            ResetPasswordResponse response = new();
+            response.HasError = false;
+
+            var accountExist = await _userManager.FindByEmailAsync(passwordRequest.Email);
+            if (accountExist == null)
+            {
+                response.HasError = true;
+                response.Error = $"No account exits with the requested email: {passwordRequest.Email}";
+            }
+
+            // Decodeo el token
+            passwordRequest.Token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(passwordRequest.Token));
+            var result = await _userManager.ResetPasswordAsync(accountExist, passwordRequest.Token, passwordRequest.Password);
 
             if (!result.Succeeded)
             {
                 response.HasError = true;
-                response.Error = $"The password inserted was wrong!";
-                return response;
+                response.Error = "There was an error while attempting to reset the password";
             }
 
-
-            if (result.Succeeded && newPassword != oldPassword)
-            {
-                // Send to user's email the new generated password
-                await _emailService.SendAsync(new EmailRequest
-                {
-                    To = user.Email,
-                    Subject = "Create New Password Request",
-                    Body = $"Here's your new password: {newPassword}"
-                });
-            }
 
             return response;
         }
 
 
-        //ConfirmAccountUri
-        private async Task<string> GetConfirmAccountUri(ApplicationUser user, string origin)
+        #endregion
+
+
+        #region Email
+        //Generar uri con el token de reset password 
+        private async Task<string> SendForgotPasswordUri(ApplicationUser user, string origin)
         {
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));            // Encondear el token
-            string route = "User/ConfirmEmail";
-            var uri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(uri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", token);
+            // Genero un token de solicitud de cambio de password
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code)); // Encodeamos el token asociado a usuario para poder agregarselo a la url
+            var route = "User/ResetPassword"; // Ruta donde ira -- controlador/action
+            var Uri = new Uri(string.Concat($"{origin}/", route)); // Concatemos el origen y la ruta
+            var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "token", code);
 
             return verificationUri;
         }
 
-        //ForgotPasswordUri - generates an uri with a token with change email purposes
-        private async Task<string> GetForgotPasswordUri(ApplicationUser user, string origin)
+        // Metodo para generar el uri con el id y token de confirmacion
+        private async Task<string> SendVerificationEmailUri(ApplicationUser user, string origin)
         {
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));            // Encondear el token
-            string route = "User/ResetPassword";
-            var uri = new Uri(string.Concat($"{origin}/", route));
-            var forgotPasswordUri = QueryHelpers.AddQueryString(uri.ToString(), "token", token);
+            //Se necesita formar una url que sea valida para el usuario y asi pueda confirmar sus cuentas
 
-            return forgotPasswordUri;
+            //Logica para enviar un codigo con token de confirmacion para activar/validar cuentas
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code)); // Encodeamos el token asociado a usuario para poder agregarselo a la url
+            var route = "User/ConfirmEmail";
+            var Uri = new Uri(string.Concat($"{origin}/", route)); // Concatemos el origen y la ruta
+            var verificationUri = QueryHelpers.AddQueryString(Uri.ToString(), "userId", user.Id); // Agregamos el userId y el token de confirmacion 
+            verificationUri = QueryHelpers.AddQueryString(verificationUri, "token", code);
+            //Utilizamos la uri que previamente tenia el userId y le agregamos el token, basicamente el valor actual de la uri mas el token
+            return verificationUri;
         }
+
+
+
+        #endregion
+
 
 
         //Update user/account
