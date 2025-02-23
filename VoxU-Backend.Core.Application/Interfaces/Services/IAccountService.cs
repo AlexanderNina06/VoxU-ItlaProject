@@ -15,7 +15,8 @@ namespace VoxU_Backend.Core.Application.Interfaces.Services
         Task<RegisterResponse> RegisterAsync(RegisterRequest registerRequest, string origin);
         Task<ForgotPasswordResponse> ForgotPasswordAsync(ForgotPassword passwordRequest, string origin);
        Task<ResetPasswordResponse> ResetPasswordAsync(ResetPassword passwordRequest);
-
+        Task<byte[]> FindImageUserId(string userId);
+        Task<string> FindUserNameById(string userId);
 
     }
 }
