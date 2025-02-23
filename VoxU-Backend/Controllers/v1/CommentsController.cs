@@ -83,6 +83,7 @@ namespace VoxU_Backend.Controllers.v1
                 }
 
                 saveCommentsRequest.CommentUserPicture = await _accountService.FindImageUserId(saveCommentsRequest.UserId);
+
                 await _commentsService.AddAsyncVm(saveCommentsRequest);
                 return Created();
 
