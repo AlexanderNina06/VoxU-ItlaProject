@@ -52,7 +52,7 @@ namespace VoxU_Backend.Controllers.v1
 
                 if (publication is null)
                 {
-                    return NotFound();
+                    return NotFound(); 
                 }
 
                 publication.ImageFront = File(publication.ImageUrl, "image/jpeg");
