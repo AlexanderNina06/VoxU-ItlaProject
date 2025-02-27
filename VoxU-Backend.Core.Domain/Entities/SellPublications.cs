@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VoxU_Backend.Core.Domain.Entities
 {
-    public class Publications
+    public class SellPublications
     {
         public int Id { get; set; }
         public string? Description { get; set; }
@@ -15,7 +15,7 @@ namespace VoxU_Backend.Core.Domain.Entities
         public string? UserId { get; set; }
         public byte[]? userPicture { get; set; }
         public string? userName { get; set; }
-        public ICollection<Comments>? Comments {get; set;}
-
+        public double? Price { get; set; }
+        public string? Place { get; set; }
     }
 }

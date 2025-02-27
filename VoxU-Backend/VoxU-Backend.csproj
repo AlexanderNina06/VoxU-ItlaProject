@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantGlobalization>false</InvariantGlobalization>
     <RootNamespace>VoxU_Backend</RootNamespace>
   </PropertyGroup>
 
@@ -17,7 +17,8 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.17" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.6.2" />
+		<PackageReference Include="swashbuckle.aspnetcore.annotations" Version="7.3.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="7.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
