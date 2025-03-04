@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NuGet.DependencyResolver;
+using Swashbuckle.AspNetCore.Annotations;
+using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
+using VoxU_Backend.Core.Application.DTOS.Replies;
 using VoxU_Backend.Core.Application.Interfaces.Services;
+using VoxU_Backend.Core.Application.Services;
 using VoxU_Backend.Core.Domain.Entities;
 using VoxU_Backend.Helpers;
+using VoxU_Backend.Pesistence.Identity.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,24 +19,27 @@ namespace VoxU_Backend.Controllers.v1
     [ApiController]
     public class PublicationsController : ControllerBase
     {
-      private readonly IPublicationService _publicationService;
-      public PublicationsController(IPublicationService publicationService) 
-      {
-        _publicationService = publicationService;
-        
-      }
+        private readonly IPublicationService _publicationService;
+        private readonly IRepliesService _repliesService;
+        private readonly IAccountService _accountService;
+        public PublicationsController(IPublicationService publicationService, IRepliesService repliesService, IAccountService accountService)
+        {
+            _publicationService = publicationService;
+            _repliesService = repliesService;
+            _accountService = accountService;
+        }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(
-            Summary = "Get All Publications",
-            Description = "Retrieves a list of all Publications in the system."
+            Summary = "Obtener todas las publicaciones",
+            Description = "Recupera una lista de todas las publicaciones en el sistema.."
         )]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
            
-            var publications = await _publicationService.GetAllVm();
+            var publications = await _publicationService.GetPublicationsWithInclude();
 
 
             if (publications is null)
@@ -47,8 +55,8 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Get Publications By Id",
-            Description = "Retrieves a specific Publication by its ID."
+            Summary = "Obtener publicaciones por el Id",
+            Description = "Recupera una publicación específica por su ID."
         )]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPublicationById([FromQuery] int id)
@@ -78,8 +86,8 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Create Publication",
-            Description = "Creates a new Publication in the system."
+            Summary = "Crear publicaciones",
+            Description = "Crea una nueva publicación en el sistema."
         )]
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] SavePublicationRequest savePublicationRequest)
@@ -112,8 +120,8 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Update Publication",
-            Description = "Updates an existing publication in the system."
+            Summary = "Actualizar publicacion",
+            Description = "Actualiza una publicación existente en el sistema."
         )]
         [HttpPut]
         public async Task<IActionResult> Put(SavePublicationRequest request, int Id)
@@ -142,8 +150,8 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [SwaggerOperation(
-        Summary = "Delete a Publication",
-        Description = "Deletes a Publication from the system."
+            Summary = "Eliminar una publicacion",
+            Description = "Elimina una publicación del sistema."
         )]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromQuery] int id)
@@ -174,6 +182,27 @@ namespace VoxU_Backend.Controllers.v1
             }
 
             return publications;
+        }
+
+        /*public IActionResult AddReply(int Id)
+        {
+            SaveRepliesRequest saveRepliesView = new SaveRepliesRequest();
+            saveRepliesView.CommentId = Id;
+            return View(saveRepliesView);
+        }*/
+
+        [HttpPost("reply")]
+        public async Task<IActionResult> AddReply([FromBody] SaveRepliesRequest saveReplyRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(saveReplyRequest);
+            }
+
+            saveReplyRequest.ReplyUserPicture = await _accountService.FindImageUserId(saveReplyRequest.UserId);
+
+            await _repliesService.AddAsyncVm(saveReplyRequest);
+            return Ok();
         }
 
 
