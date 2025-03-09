@@ -17,6 +17,7 @@ namespace VoxU_Backend.Core.Application.Interfaces.Services
        Task<ResetPasswordResponse> ResetPasswordAsync(ResetPassword passwordRequest);
         Task<byte[]> FindImageUserId(string userId);
         Task<string> FindUserNameById(string userId);
+        Task<UpdateAccountResponse> UpdateUser(UpdateAccountRequest updateAccountRequest);
 
     }
 }

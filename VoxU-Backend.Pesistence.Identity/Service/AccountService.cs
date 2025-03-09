@@ -415,8 +415,33 @@ namespace VoxU_Backend.Pesistence.Identity.Service
 
         }
 
+        public async Task<UpdateAccountResponse> UpdateUser(UpdateAccountRequest updateAccountRequest)
+        {
+            UpdateAccountResponse response = new();
+            response.HasError = false;
 
-      
+            var user = await _userManager.FindByEmailAsync(updateAccountRequest.Email);
 
+            if (user == null)
+            {
+                response.HasError = true;
+                response.Error = $"No existe un usuario vinculado con el Email: {updateAccountRequest.Email}";
+            }
+
+            user.Name = updateAccountRequest.Name;
+            user.LastName = updateAccountRequest.LastName;
+            user.PhoneNumber = updateAccountRequest.PhoneNumber;
+            user.ProfilePicture = updateAccountRequest.ProfilePicture;
+            user.Email = updateAccountRequest.Email;
+
+            var userResult = await _userManager.UpdateAsync(user);
+            if (!userResult.Succeeded)
+            {
+                response.HasError = true;
+                response.Error = "There was an error while attempting to update the user's information";
+            }
+
+            return response;
+        }
     }
 }

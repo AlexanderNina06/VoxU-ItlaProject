@@ -79,8 +79,8 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Crear publicaciones",
-            Description = "Crea una nueva publicación en el sistema."
+            Summary = "Crear Comentario",
+            Description = "Crea un nuevo comentario en una publicacion."
         )]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SaveCommentsRequest saveCommentsRequest)
@@ -104,7 +104,6 @@ namespace VoxU_Backend.Controllers.v1
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
 
         }
 
@@ -142,8 +141,8 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [SwaggerOperation(
-            Summary = "Eliminar una publicacion",
-            Description = "Elimina una publicación del sistema."
+            Summary = "Eliminar comentario",
+            Description = "Elimina un comentario del sistema."
         )]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromQuery] int id)
