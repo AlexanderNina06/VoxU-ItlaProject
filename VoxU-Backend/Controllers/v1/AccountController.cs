@@ -71,5 +71,11 @@ namespace VoxU_Backend.Controllers.v1
             return Ok(await _accountService.ResetPasswordAsync(request));
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateProfile(UpdateAccountRequest request)
+        {
+            return Ok(await _accountService.UpdateUser(request));
+        }
+
     }
 }
