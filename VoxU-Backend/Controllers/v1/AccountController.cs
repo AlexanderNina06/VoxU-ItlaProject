@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Swashbuckle.AspNetCore.Annotations;
 using VoxU_Backend.Core.Application.DTOS.Account;
 using VoxU_Backend.Core.Application.Interfaces.Services;
@@ -23,7 +24,16 @@ namespace VoxU_Backend.Controllers.v1
         [HttpPost("authenticate")] //Luego de definir el tipo de verbo, podemos customizar la ruta hacia el endpoint como lo vemos aqui 
         public async Task<IActionResult> AuthenticateAsync(AuthenticationRequest request)
         {
-            return Ok(await _accountService.AuthenticateAsync(request));
+            var user = await _accountService.AuthenticateAsync(request);
+           
+            if(user.HasError)
+            {
+                return Ok(user);
+            } else
+            {
+                return BadRequest(user.Error);
+            }
+
         }
 
         [SwaggerOperation(

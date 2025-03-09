@@ -12,7 +12,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Replies
         [Required(ErrorMessage = "Debe insertar una respuesta"), DataType(DataType.Text)]
         public string Reply { get; set; }
         public string UserId { get; set; }
-        public string ReplyUserPicture { get; set; }
+        public byte[] ReplyUserPicture { get; set; }
         public string ReplyUserName { get; set; }
         public int CommentId { get; set; }
     }
