@@ -79,6 +79,9 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             Response.PhoneNumber = user.PhoneNumber;
             Response.IsVerified = user.EmailConfirmed;
             Response.Email = user.Email;
+            Response.Description = user.Description;
+            Response.Career = user.Career;
+            Response.isBlocked = user.IsBlocked;
 
             var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
             Response.Roles = rolesList.ToList();
@@ -196,7 +199,9 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             newUser.Email = registerRequest.Email;
             newUser.ProfilePicture = registerRequest.ProfilePicture;
             newUser.Created_At = registerRequest.Created_At;
-
+            newUser.Career = registerRequest.Career;
+            newUser.Description = registerRequest.Description;
+            newUser.IsBlocked = false;
             var result = await _userManager.CreateAsync(newUser, registerRequest.Password);
 
             if (result.Succeeded)
@@ -433,6 +438,9 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             user.PhoneNumber = updateAccountRequest.PhoneNumber;
             user.ProfilePicture = updateAccountRequest.ProfilePicture;
             user.Email = updateAccountRequest.Email;
+            user.Career = updateAccountRequest.Email;
+            user.Description = updateAccountRequest.Email;
+            user.IsBlocked = updateAccountRequest.IsBlocked;
 
             var userResult = await _userManager.UpdateAsync(user);
             if (!userResult.Succeeded)
