@@ -60,7 +60,7 @@ namespace VoxU_Backend.Persistence.Shared.Service
         <html>
         <head>
             <style>
-                /* Estilos básicos para el cuerpo del correo */
+                /* Estilos básicos para el cuerpo del correo 
                 body {{
                     font-family: Arial, sans-serif;
                     color: #333333;
