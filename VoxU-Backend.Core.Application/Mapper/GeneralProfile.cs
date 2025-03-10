@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.DTOS.Replies;
+using VoxU_Backend.Core.Application.DTOS.Report;
 using VoxU_Backend.Core.Domain.Entities;
 
 namespace VoxU_Backend.Core.Application.Mapper
@@ -20,11 +21,13 @@ namespace VoxU_Backend.Core.Application.Mapper
             CreateMap<Publications, SavePublicationRequest>()
                 .ForMember(dest => dest.imageFile, opt => opt.Ignore())
                 .ReverseMap()
-              .ForMember(dest => dest.Comments, opt => opt.Ignore());
+              .ForMember(dest => dest.Comments, opt => opt.Ignore())
+              .ForMember(dest => dest.Reports, opt => opt.Ignore());
 
             CreateMap<Publications, GetPublicationResponse>()
              .ForMember(dest => dest.CommentsCount, opt => opt.Ignore())
              .ForMember(dest => dest.Comments, opt => opt.Ignore())
+              .ForMember(dest => dest.Reports, opt => opt.Ignore())
              .ReverseMap();
 
             //Comments
@@ -49,7 +52,15 @@ namespace VoxU_Backend.Core.Application.Mapper
             CreateMap<Replies, GetRepliesReponse>()
                 .ForMember(dest => dest.Comments, opt => opt.Ignore())
                .ReverseMap()
-               .ForMember(dest => dest.Comments, opt => opt.Ignore()); ;
+               .ForMember(dest => dest.Comments, opt => opt.Ignore());
+
+            //Reports
+            CreateMap<Report, SaveReportRequest>()
+                .ReverseMap()
+              .ForMember(dest => dest.Publications, opt => opt.Ignore());
+
+            CreateMap<Report, GetReportResponse>();
+
         }
     }
 }

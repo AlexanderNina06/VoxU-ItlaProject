@@ -15,7 +15,9 @@ namespace VoxU_Backend.Core.Domain.Entities
         public string? UserId { get; set; }
         public byte[]? userPicture { get; set; }
         public string? userName { get; set; }
+        public bool isActive { get; set; }
         public ICollection<Comments>? Comments {get; set;}
+        public ICollection<Report>? Reports {get; set;}
 
     }
 }
