@@ -19,6 +19,9 @@ namespace VoxU_Backend.Core.Application.DTOS.Account
         public bool IsVerified { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+        public string? Career { get; set; }
+        public string? Description { get; set; }
+        public bool? isBlocked { get; set; }
         public string? Error { get; set; }
         public bool HasError { get; set; }
         public List<string> Roles { get; set; }

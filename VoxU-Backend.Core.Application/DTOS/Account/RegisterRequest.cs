@@ -19,5 +19,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Account
         public DateTime? Created_At => DateTime.Now;
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+        public string? Career { get; set; }
+        public string? Description { get; set; }
     }
 }

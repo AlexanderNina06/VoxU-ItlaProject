@@ -17,6 +17,8 @@ namespace VoxU_Backend.Pesistence.Identity.Entities
         public string? LastName { get; set; }
         public string? User { get; set; }
         public bool IsBlocked { get; set; }
+        public string? Description { get; set; }
+        public string? Career { get; set; }
         public byte[]? ProfilePicture { get; set; }
         public DateTime? Created_At { get; set; }
     }
