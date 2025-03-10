@@ -43,6 +43,7 @@ namespace VoxU_Backend.Core.Application.Mapper
 
             CreateMap<Replies, SaveRepliesRequest>()
                 .ReverseMap()
+               .ForMember(dest => dest.Id, opt => opt.Ignore())
                .ForMember(dest => dest.Comments, opt => opt.Ignore());
 
             CreateMap<Replies, GetRepliesReponse>()

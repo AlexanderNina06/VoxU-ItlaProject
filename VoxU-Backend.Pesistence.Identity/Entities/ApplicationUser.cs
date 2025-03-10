@@ -11,6 +11,8 @@ namespace VoxU_Backend.Pesistence.Identity.Entities
     {
         //UserName va a representar la matricula
         // User Va a representar el nombre de usuario
+        
+        // Falta Biografia 
         public string? Name { get; set; }
         public string? LastName { get; set; }
         public string? User { get; set; }
