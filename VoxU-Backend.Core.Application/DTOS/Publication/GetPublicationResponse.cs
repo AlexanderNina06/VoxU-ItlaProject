@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.DTOS.Comments;
+using VoxU_Backend.Core.Application.DTOS.Report;
 
 namespace VoxU_Backend.Core.Application.DTOS.Publication
 {
@@ -19,5 +20,6 @@ namespace VoxU_Backend.Core.Application.DTOS.Publication
         public string userName { get; set; }
         public int CommentsCount { get; set; }
         public ICollection<GetCommentsResponse>? Comments { get; set; }
+        public ICollection<GetReportResponse>? Reports { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using VoxU_Backend.Core.Application.DTOS.Account;
 using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.DTOS.Replies;
+using VoxU_Backend.Core.Application.DTOS.Report;
 using VoxU_Backend.Core.Application.Interfaces.Repositories;
 using VoxU_Backend.Core.Application.Interfaces.Services;
 using VoxU_Backend.Core.Domain.Entities;
@@ -33,8 +34,9 @@ namespace VoxU_Backend.Core.Application.Services
 
         public async Task<List<GetPublicationResponse>> GetPublicationsWithInclude()
         {
-            var publicationsList = await _publicationRepository.GetAllWithInclude(new List<string> { "Comments" });
+            var publicationsList = await _publicationRepository.GetAllWithInclude(new List<string> { "Comments", "Reports" });
             var commentsWithReplies = await _commentsRepository.GetAllWithInclude(new List<string> { "replies" });
+
 
             var tasks = publicationsList.Select(async publication =>
             {
@@ -72,7 +74,14 @@ namespace VoxU_Backend.Core.Application.Services
                     userPicture = publication.userPicture,
                     userName = publication.userName,
                     Comments = comments.ToList(),
-                    CommentsCount = comments.Length
+                    CommentsCount = comments.Length,
+                    Reports = publication.Reports.Select(r => new GetReportResponse
+                    {
+                        Id = r.Id,
+                        UserId = r.UserId,
+                        PublicationId = r.PublicationId,
+                        Descripcion = r.Descripcion
+                    }).ToList()
 
                 };
 
