@@ -65,17 +65,44 @@ namespace VoxU_Backend.Controllers.v1
             try
             {
                 var publication = await _publicationService.GetVmById(id);
-
+         
                 if (publication is null)
                 {
                     return NotFound(); 
                 }
-
-                publication.ImageFront = File(publication.ImageUrl, "image/jpeg");
-
                 return Ok(publication);
 
             } catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "Obtener publicaciones por carreras",
+            Description = "Recupera un listado de publicaciónes específica por carrera."
+        )]
+        [HttpGet("ByCareer")]
+        public async Task<IActionResult> GetPublicationByCarrer([FromQuery] string carrera)
+        {
+            try
+            {
+                var userList = await _accountService.GetAllUsersAsync();
+                var publication = await _publicationService.GetPublicationsByCareerWithInclude(userList, carrera);
+
+                if (publication is null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(getImageFront(publication));
+
+            }
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
@@ -112,8 +139,6 @@ namespace VoxU_Backend.Controllers.v1
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-          
-
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -142,10 +167,7 @@ namespace VoxU_Backend.Controllers.v1
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-
         }
-       
 
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

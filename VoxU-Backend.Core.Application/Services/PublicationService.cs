@@ -17,6 +17,7 @@ namespace VoxU_Backend.Core.Application.Services
         private readonly IPublicationRepository _publicationRepository;
         private readonly ICommentsRepository _commentsRepository;
 
+
         public PublicationService(IMapper mapper, IPublicationRepository publicationRepository, ICommentsRepository commentsRepository) : base(mapper, publicationRepository)
         {
             _mapper = mapper;
@@ -25,11 +26,64 @@ namespace VoxU_Backend.Core.Application.Services
 
         }
 
-        
-
-        public Task<List<GetPublicationResponse>> GetFriendsPublicationsWithInclude()
+        public async Task<List<GetPublicationResponse>> GetPublicationsByCareerWithInclude(List<GetUsersResponse> userlist, string carrera)
         {
-            throw new NotImplementedException();
+            // Filter users by the specified career
+            var usersInCareer = userlist.Where(user => user.Career == carrera).Select(user => user.Id).ToList();
+
+            // Get all publications with comments and reports
+            var publicationsList = await _publicationRepository.GetAllWithInclude(new List<string> { "Comments", "Reports" });
+
+            // Filter publications by users in the specified career
+            var filteredPublications = publicationsList.Where(publication => usersInCareer.Contains(publication.UserId)).ToList();
+
+            var commentsWithReplies = await _commentsRepository.GetAllWithInclude(new List<string> { "replies" });
+
+            var tasks = filteredPublications.Select(async publication =>
+            {
+                var commentsTasks = publication.Comments.Select(async comment =>
+                {
+                    return new GetCommentsResponse
+                    {
+                        Id = comment.Id,
+                        Comment = comment.Comment,
+                        UserId = comment.UserId,
+                        CommentUserName = comment.CommentUserName,
+                        CommentUserPicture = comment.CommentUserPicture,
+                        replies = comment.replies.Select(r => new GetRepliesReponse
+                        {
+                            Reply = r.Reply,
+                            ReplyUserName = r.ReplyUserName,
+                            ReplyUserPicture = r.ReplyUserPicture
+                        }).ToList()
+                    };
+                });
+
+                var comments = await Task.WhenAll(commentsTasks);
+
+                return new GetPublicationResponse
+                {
+                    Id = publication.Id,
+                    UserId = publication.UserId,
+                    Description = publication.Description,
+                    ImageUrl = publication.ImageUrl,
+                    Created_At = (DateTime)publication.Created_At,
+                    userPicture = publication.userPicture,
+                    userName = publication.userName,
+                    Comments = comments.ToList(),
+                    CommentsCount = comments.Length,
+                    Reports = publication.Reports.Select(r => new GetReportResponse
+                    {
+                        Id = r.Id,
+                        UserId = r.UserId,
+                        PublicationId = r.PublicationId,
+                        Descripcion = r.Descripcion
+                    }).ToList()
+                };
+            });
+
+            var publications = await Task.WhenAll(tasks);
+            return publications.ToList();
         }
 
         public async Task<List<GetPublicationResponse>> GetPublicationsWithInclude()
@@ -88,8 +142,9 @@ namespace VoxU_Backend.Core.Application.Services
             });
 
              var publications = await Task.WhenAll(tasks);
-                return publications.ToList();
+             return publications.ToList();
 
         }
+
     }
 }
