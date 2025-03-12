@@ -25,8 +25,6 @@ namespace VoxU_Backend.Core.Application.Services
 
         }
 
-        
-
         public Task<List<GetPublicationResponse>> GetFriendsPublicationsWithInclude()
         {
             throw new NotImplementedException();

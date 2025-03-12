@@ -18,6 +18,7 @@ namespace VoxU_Backend.Core.Persistence.Contexts
         public DbSet<SellPublications> SellPublications { get; set; }
         public DbSet<Replies> Replies { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<Category> Category { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,12 +30,14 @@ namespace VoxU_Backend.Core.Persistence.Contexts
             modelBuilder.Entity<SellPublications>().ToTable("SellPublications");
             modelBuilder.Entity<Replies>().ToTable("Replies");
             modelBuilder.Entity<Report>().ToTable("Reports");
+            modelBuilder.Entity<Category>().ToTable("Category");
 
             modelBuilder.Entity<Comments>().HasKey(comment => comment.Id);
             modelBuilder.Entity<Publications>().HasKey(Publications => Publications.Id);
             modelBuilder.Entity<SellPublications>().HasKey(SellPublications => SellPublications.Id);
             modelBuilder.Entity<Replies>().HasKey(r => r.Id);
             modelBuilder.Entity<Report>().HasKey(report => report.Id);
+            modelBuilder.Entity<Category>().HasKey(category => category.Id);
 
             modelBuilder.Entity<Publications>()
                 .HasMany<Comments>(Publications => Publications.Comments)
@@ -51,6 +54,10 @@ namespace VoxU_Backend.Core.Persistence.Contexts
                 .WithOne(Comments => Comments.Publications)
                 .HasForeignKey(p => p.PublicationId);
 
+            modelBuilder.Entity<Category>()
+              .HasMany<SellPublications>(c => c.sellPublications)
+              .WithOne(publications => publications.Category)
+              .HasForeignKey(p => p.CategoryId);
         }
 
     }

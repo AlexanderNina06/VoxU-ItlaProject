@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoxU_Backend.Core.Application.DTOS;
 using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.DTOS.Replies;
@@ -60,6 +61,9 @@ namespace VoxU_Backend.Core.Application.Mapper
               .ForMember(dest => dest.Publications, opt => opt.Ignore());
 
             CreateMap<Report, GetReportResponse>();
+            
+            CreateMap<SellPublications, GetSellPublication>()
+                .ReverseMap();
 
         }
     }
