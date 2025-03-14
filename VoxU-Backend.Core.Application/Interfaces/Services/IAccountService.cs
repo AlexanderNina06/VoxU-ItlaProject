@@ -18,6 +18,7 @@ namespace VoxU_Backend.Core.Application.Interfaces.Services
         Task<byte[]> FindImageUserId(string userId);
         Task<string> FindUserNameById(string userId);
         Task<UpdateAccountResponse> UpdateUser(UpdateAccountRequest updateAccountRequest);
+        Task<List<GetUsersResponse>> GetAllUsersAsync();
 
     }
 }

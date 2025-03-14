@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 //using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Crypto.Paddings;
 using System;
 using System.Collections.Generic;
@@ -175,19 +177,26 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             if (user != null)
             {
                 response.HasError = true;
-                response.Error = $"The user: {registerRequest.collegeId} already exist, try another user !";
+                response.Error = $"Ya existe un usuario con la matricula: {registerRequest.collegeId}, intente nuevamente!";
+                return response;
+            }
+
+            if (!ValidatePassword(registerRequest.Password))
+            {
+                response.HasError = true;
+                response.Error = "La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial.";
                 return response;
             }
 
 
-            var emailUser = await _userManager.FindByEmailAsync(registerRequest.Email);
+            /*var emailUser = await _userManager.FindByEmailAsync(registerRequest.Email);
 
             if (user != emailUser)
             {
                 response.HasError = true;
                 response.Error = $"The email: {registerRequest.Email} already exist, try another email !";
                 return response;
-            }
+            }*/
 
             //Add New User
             ApplicationUser newUser = new();
@@ -196,7 +205,7 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             newUser.LastName = registerRequest.LastName;
             newUser.User = registerRequest.User;
             newUser.PhoneNumber = registerRequest.PhoneNumber;
-            newUser.Email = registerRequest.Email;
+            newUser.Email = registerRequest.collegeId + "@itla.edu.do";
             newUser.ProfilePicture = registerRequest.ProfilePicture;
             newUser.Created_At = registerRequest.Created_At;
             newUser.Career = registerRequest.Career;
@@ -210,9 +219,9 @@ namespace VoxU_Backend.Pesistence.Identity.Service
                 var emailVerificationUri = await SendVerificationEmailUri(newUser, origin);
                 await _emailService.SendAsync(new EmailRequest
                 {
-                    To = registerRequest.Email,
-                    Subject = "User Verification",
-                    Body = $"Please verificate your account by clicking on the following verification link: {emailVerificationUri}"
+                    To = newUser.Email,
+                    Subject = "Verificación de Usuario",
+                    Body = $"Por favor, verifica tu cuenta haciendo clic en el siguiente enlace de verificación: {emailVerificationUri}"
                 });
                 response.UserId = newUser.Id;
             }
@@ -220,7 +229,7 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             if (!result.Succeeded)
             {
                 response.HasError = true;
-                response.Error = $"There was an error while attempting to register the user ";
+                response.Error = $"Hubo un error al intentar registrar al usuario";
                 return response;
             }
 
@@ -274,8 +283,6 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             });
 
             return response;
-
-
         }
 
         //Metodo para resetear el password
@@ -450,6 +457,33 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             }
 
             return response;
+        }
+        private bool ValidatePassword(string password)
+        {
+            const int minLength = 8;
+            var hasUpper = password.Any(char.IsUpper);
+            var hasLower = password.Any(char.IsLower);
+            var hasSymbol = password.Any(c => !char.IsLetterOrDigit(c));
+
+            return password.Length >= minLength && hasUpper && hasLower && hasSymbol;
+        }
+
+        public async Task<List<GetUsersResponse>> GetAllUsersAsync()
+        {
+            var userList = await _userManager.Users.ToListAsync();
+            return userList.Select(user => new GetUsersResponse
+            {
+                Id = user.Id,
+                Name = user.Name,
+                LastName = user.LastName,
+                User = user.User,
+                IsBlocked = user.IsBlocked,
+                Description = user.Description,
+                Career = user.Career,
+                ProfilePicture = user.ProfilePicture,
+                Created_At = user.Created_At
+            }).ToList();
+
         }
     }
 }
