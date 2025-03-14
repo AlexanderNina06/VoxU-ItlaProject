@@ -14,6 +14,7 @@ namespace VoxU_Backend.Core.Application.DTOS
         public string? Description { get; set; }
         public byte[]? ImageUrl { get; set; }
         public DateTime? Created_At { get; set; }
+        public string? userName { get; set; }
         public double? Price { get; set; }
         public string? Place { get; set; }
     }

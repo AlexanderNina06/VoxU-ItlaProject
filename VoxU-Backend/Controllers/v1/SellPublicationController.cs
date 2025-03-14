@@ -4,6 +4,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.DTOS.Replies;
+using VoxU_Backend.Core.Application.DTOS.SellPublication;
 using VoxU_Backend.Core.Application.Interfaces.Services;
 using VoxU_Backend.Core.Application.Services;
 using VoxU_Backend.Core.Domain.Entities;
@@ -44,6 +45,40 @@ namespace VoxU_Backend.Controllers.v1
             }
 
             return Ok(publications);
+
+        }
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "Crear publicaciones de ventas",
+            Description = "Crea una nueva publicación de ventas en el sistema."
+        )]
+        [HttpPost]
+        public async Task<IActionResult> Post([FromForm] SaveSellPublication saveSellPublicationRequest)
+        {
+
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(saveSellPublicationRequest);
+                }
+
+                byte[] ImageBytes = ImageProcess.ImageConverter(saveSellPublicationRequest.imageFile);
+                saveSellPublicationRequest.ImageUrl = ImageBytes;
+                saveSellPublicationRequest.userPicture = ImageBytes;
+
+                await _sellPublicationService.AddAsyncVm(saveSellPublicationRequest);
+                return Created();
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
 
         }
     }

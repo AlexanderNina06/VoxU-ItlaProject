@@ -9,6 +9,7 @@ using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.DTOS.Replies;
 using VoxU_Backend.Core.Application.DTOS.Report;
+using VoxU_Backend.Core.Application.DTOS.SellPublication;
 using VoxU_Backend.Core.Domain.Entities;
 
 namespace VoxU_Backend.Core.Application.Mapper
@@ -64,6 +65,10 @@ namespace VoxU_Backend.Core.Application.Mapper
             
             CreateMap<SellPublications, GetSellPublication>()
                 .ReverseMap();
+
+            CreateMap<SellPublications, SaveSellPublication>()
+                .ReverseMap()
+                .ForMember(dest => dest.Category, opt => opt.Ignore());
 
         }
     }
