@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.IsisMtt.X509;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Crypto.Paddings;
 using System;
@@ -15,6 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.DTOS.Account;
+using VoxU_Backend.Core.Application.DTOS.Account.Delete;
 using VoxU_Backend.Core.Application.DTOS.Email;
 using VoxU_Backend.Core.Application.Enums;
 using VoxU_Backend.Core.Application.Interfaces.Services;
@@ -188,15 +190,15 @@ namespace VoxU_Backend.Pesistence.Identity.Service
                 return response;
             }
 
+            string Email = registerRequest.collegeId + "@itla.edu.do";
+            var emailUser = await _userManager.FindByEmailAsync(Email);
 
-            /*var emailUser = await _userManager.FindByEmailAsync(registerRequest.Email);
-
-            if (user != emailUser)
+            if (emailUser != null)
             {
                 response.HasError = true;
-                response.Error = $"The email: {registerRequest.Email} already exist, try another email !";
+                response.Error = $"The email: {Email} already exist, try another email !";
                 return response;
-            }*/
+            }
 
             //Add New User
             ApplicationUser newUser = new();
@@ -205,7 +207,7 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             newUser.LastName = registerRequest.LastName;
             newUser.User = registerRequest.User;
             newUser.PhoneNumber = registerRequest.PhoneNumber;
-            newUser.Email = registerRequest.collegeId + "@itla.edu.do";
+            newUser.Email = Email;
             newUser.ProfilePicture = registerRequest.ProfilePicture;
             newUser.Created_At = registerRequest.Created_At;
             newUser.Career = registerRequest.Career;
@@ -440,6 +442,8 @@ namespace VoxU_Backend.Pesistence.Identity.Service
                 response.Error = $"No existe un usuario vinculado con el Email: {updateAccountRequest.Email}";
             }
 
+         
+
             user.Name = updateAccountRequest.Name;
             user.LastName = updateAccountRequest.LastName;
             user.PhoneNumber = updateAccountRequest.PhoneNumber;
@@ -447,8 +451,8 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             user.Email = updateAccountRequest.Email;
             user.Career = updateAccountRequest.Email;
             user.Description = updateAccountRequest.Email;
-            user.IsBlocked = updateAccountRequest.IsBlocked;
-
+            //user.IsBlocked = updateAccountRequest.IsBlocked;
+             
             var userResult = await _userManager.UpdateAsync(user);
             if (!userResult.Succeeded)
             {
@@ -484,6 +488,91 @@ namespace VoxU_Backend.Pesistence.Identity.Service
                 Created_At = user.Created_At
             }).ToList();
 
+        }
+
+        public async Task<List<GetUsersResponse>> GetActiveUsers()
+        {
+            var userList = await _userManager.Users.ToListAsync();
+
+            return userList.Where(user => user.EmailConfirmed == true && user.IsBlocked == false).Select(user => new GetUsersResponse
+            {
+                Id = user.Id,
+                Name = user.Name,
+                LastName = user.LastName,
+                User = user.User,
+                IsBlocked = user.IsBlocked,
+                Description = user.Description,
+                Career = user.Career,
+                ProfilePicture = user.ProfilePicture,
+                Created_At = user.Created_At
+            }).ToList();
+
+
+        }
+
+        public async Task<DeleteUserResponse> DeleteUser(string userName)
+        {
+
+            DeleteUserResponse response = new();
+            response.hasError = false;
+
+            var user = await _userManager.FindByNameAsync(userName);
+
+            if (user == null)
+            {
+                response.hasError = true;
+                response.error = $"No existe un usuario: {userName} existente !";
+                return response;
+            }
+
+            try
+            {
+                await _userManager.DeleteAsync(user);
+            } catch(Exception ex)
+            {
+                response.hasError = true;
+                response.error = ex.Message;
+                return response;
+            }
+
+            response.Result = $"El Usuario: {userName} fue eliminado correctamente !";
+
+            return response;
+
+        }
+    
+        public async Task<lockUnlockUserResponse> lockUnlockUser(string userName)
+        {
+            lockUnlockUserResponse response = new();
+            response.hasError = false;
+
+            var user = await _userManager.FindByNameAsync(userName);
+
+           
+                if (user.IsBlocked == false)
+                {
+                    user.IsBlocked = true;
+                }
+                else
+                {
+                    user.IsBlocked = false;
+                }
+
+
+            try
+            {
+                await _userManager.UpdateAsync(user);
+            }
+            catch (Exception ex)
+            {
+                response.hasError = true;
+                response.error = ex.Message;
+                return response;
+            }
+
+            response.Result = $"El Usuario: {userName} fue {(user.IsBlocked == true ? "Bloqueado" : "Desbloqueado")} correctamente !";
+
+            return response;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Swashbuckle.AspNetCore.Annotations;
 using VoxU_Backend.Core.Application.DTOS.Account;
+using VoxU_Backend.Core.Application.DTOS.Account.Delete;
 using VoxU_Backend.Core.Application.Interfaces.Services;
 using VoxU_Backend.Helpers;
 
@@ -81,11 +82,34 @@ namespace VoxU_Backend.Controllers.v1
             return Ok(await _accountService.ResetPasswordAsync(request));
         }
 
-        [HttpPut]
+        [HttpPut("UpdateProfile")]
         public async Task<IActionResult> UpdateProfile(UpdateAccountRequest request)
         {
             return Ok(await _accountService.UpdateUser(request));
+        }  
+        
+        [HttpDelete("DeleteProfile")]
+        public async Task<IActionResult> DeleteProfile(string userName)
+        {
+            if (string.IsNullOrEmpty(userName)) return BadRequest();
+
+            var response = await _accountService.DeleteUser(userName);
+
+            if (response.hasError) return StatusCode(StatusCodes.Status500InternalServerError, response.error);
+
+            return Ok();
+        }  
+        
+        [HttpPut("CastProfile")]
+        public async Task<IActionResult> CastProfile(string userName)
+        {
+            return Ok(await _accountService.lockUnlockUser(userName));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetActiveUsers()
+        {
+            return Ok(await _accountService.GetActiveUsers());
+        }
     }
 }
