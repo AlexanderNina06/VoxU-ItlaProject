@@ -14,6 +14,7 @@ namespace VoxU_Backend.Core.Application.Interfaces.Services
         Task<SavePublicationRequest> AddAsyncVm(SavePublicationRequest saveViewModel);
         Task<List<GetPublicationResponse>> GetPublicationsWithInclude();
         Task<List<GetPublicationResponse>> GetPublicationsByCareerWithInclude(List<GetUsersResponse> userlist, string carrera);
-
+        Task<List<GetPublicationResponse>> GetPublicationsWithReports(); 
+        Task BlockPublication(int PublicationId);
     }
 }

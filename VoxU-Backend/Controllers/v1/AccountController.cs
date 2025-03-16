@@ -106,7 +106,7 @@ namespace VoxU_Backend.Controllers.v1
             return Ok(await _accountService.lockUnlockUser(userName));
         }
 
-        [HttpGet]
+        [HttpGet("ActiveUsers")]
         public async Task<IActionResult> GetActiveUsers()
         {
             return Ok(await _accountService.GetActiveUsers());

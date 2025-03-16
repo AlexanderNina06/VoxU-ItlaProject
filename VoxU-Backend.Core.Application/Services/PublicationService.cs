@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using System.Xml.Linq;
 using VoxU_Backend.Core.Application.DTOS.Account;
 using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
@@ -33,6 +34,9 @@ namespace VoxU_Backend.Core.Application.Services
 
             // Get all publications with comments and reports
             var publicationsList = await _publicationRepository.GetAllWithInclude(new List<string> { "Comments", "Reports" });
+
+            //filter only no blocked publications
+            publicationsList.Where(p => p.isBlocked == false);
 
             // Filter publications by users in the specified career
             var filteredPublications = publicationsList.Where(publication => usersInCareer.Contains(publication.UserId)).ToList();
@@ -85,6 +89,31 @@ namespace VoxU_Backend.Core.Application.Services
             var publications = await Task.WhenAll(tasks);
             return publications.ToList();
         }
+
+        public async Task<List<GetPublicationResponse>> GetPublicationsWithReports()
+        {
+            var publicationsList = await _publicationRepository.GetAllWithInclude(new List<string> { "Reports" });
+            
+           publicationsList.Where(p => p.Reports != null);
+           return publicationsList.Select(publication => new GetPublicationResponse {
+                    Id = publication.Id,
+                    UserId = publication.UserId,
+                    Description = publication.Description,
+                    ImageUrl = publication.ImageUrl,
+                    Created_At = (DateTime)publication.Created_At,
+                    userPicture = publication.userPicture,
+                    userName = publication.userName,
+                    Reports = publication.Reports.Select(r => new GetReportResponse
+                    {
+                        Id = r.Id,
+                        UserId = r.UserId,
+                        PublicationId = r.PublicationId,
+                        Descripcion = r.Descripcion
+                    }).ToList()
+            }).ToList();
+
+        }
+
 
         public async Task<List<GetPublicationResponse>> GetPublicationsWithInclude()
         {
@@ -145,6 +174,17 @@ namespace VoxU_Backend.Core.Application.Services
              return publications.ToList();
 
         }
+
+        public async Task BlockPublication(int PublicationId)
+        {
+            var publication = await _publicationRepository.GetById(PublicationId);
+
+            publication.isBlocked = true;
+
+            await _publicationRepository.UpdateAsync(publication, publication.Id);
+
+        }
+
 
     }
 }
