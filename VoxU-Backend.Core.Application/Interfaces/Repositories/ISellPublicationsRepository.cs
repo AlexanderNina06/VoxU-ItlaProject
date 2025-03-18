@@ -10,6 +10,6 @@ namespace VoxU_Backend.Core.Application.Interfaces.Repositories
 {
     public interface ISellPublicationsRepository : IGenericRepository<SellPublications>
     {
-        Task<List<GetSellPublication>> GetSellPublicationsByName(string Name);
+        Task<List<GetSellPublication>> GetSellPublicationsByName(string Name, int? CategoryId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using NuGet.DependencyResolver;
 using Swashbuckle.AspNetCore.Annotations;
 using VoxU_Backend.Core.Application.DTOS.Comments;
@@ -20,9 +21,11 @@ namespace VoxU_Backend.Controllers.v1
     [ApiController]
     public class SellPublicationController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly ISellpublicationService _sellPublicationService;
-        public SellPublicationController(ISellpublicationService sellPublicationService)
+        public SellPublicationController(ISellpublicationService sellPublicationService, IMapper mapper)
         {
+            _mapper = mapper;
             _sellPublicationService = sellPublicationService;
         }
 
@@ -33,10 +36,10 @@ namespace VoxU_Backend.Controllers.v1
             Description = "Recupera una lista de todas las SellPublicaciones buscadas por nombre"
         )]
         [HttpGet]
-        public async Task<IActionResult> GetByName(string Name)
+        public async Task<IActionResult> GetByName(string Name, int? CategoryId)
         {
 
-            var publications = await _sellPublicationService.GetSellPublicationsByName(Name);
+            var publications = await _sellPublicationService.GetSellPublicationsByName(Name, CategoryId);
 
 
             if (publications is null)
@@ -81,7 +84,35 @@ namespace VoxU_Backend.Controllers.v1
 
 
         }
-    }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+           Summary = "Actualizar publicacion de venta",
+           Description = "Actualiza una publicación de venta existente en el sistema."
+       )]
+        [HttpPut]
+        public async Task<IActionResult> Put(RequestSaveSellPublication requestDto, int Id)
+        {  
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(requestDto);
+                }
+                var request = _mapper.Map<SaveSellPublication>(requestDto);
+                byte[] ImageBytes = ImageProcess.ImageConverter(requestDto.imageFile);
+                request.ImageUrl = ImageBytes;
 
+                await _sellPublicationService.UpdateAsyncVm(request, Id);
+                return Ok(request);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+    }
 }
 

@@ -21,9 +21,9 @@ namespace VoxU_Backend.Core.Application.Services
             _sellsRepository = sellsRepository;
             _mapper = mapper;
         }
-        public async Task<List<GetSellPublication>> GetSellPublicationsByName(string Name)
+        public async Task<List<GetSellPublication>> GetSellPublicationsByName(string Name , int? CategoryId)
         {
-            var response = await _sellsRepository.GetSellPublicationsByName(Name);
+            var response = await _sellsRepository.GetSellPublicationsByName(Name, CategoryId);
             return response;
         }
 

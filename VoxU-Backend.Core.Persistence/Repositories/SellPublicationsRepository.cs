@@ -22,11 +22,20 @@ namespace VoxU_Backend.Core.Persistence.Repositories
             _applicationContext = applicationContext;
             _mapper = mapper;
         }
-        public async Task<List<GetSellPublication>> GetSellPublicationsByName(string Name)
+        public async Task<List<GetSellPublication>> GetSellPublicationsByName(string Name, int? CategoryId)
         {
-            var requestData = await _applicationContext.SellPublications.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{Name.ToLower()}%")).ToListAsync();
-            var response = _mapper.Map<List<GetSellPublication>>(requestData);
-            return response;
+            if (CategoryId != null && CategoryId > 0)
+            {
+                var requestData = await _applicationContext.SellPublications.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{Name.ToLower()}%") && x.CategoryId == CategoryId).ToListAsync();
+                var response = _mapper.Map<List<GetSellPublication>>(requestData);
+                return response;
+            }
+            else
+            {
+                var requestData = await _applicationContext.SellPublications.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{Name.ToLower()}%")).ToListAsync();
+                var response = _mapper.Map<List<GetSellPublication>>(requestData);
+                return response;
+            }
         }
-    }
+    }  
 }
