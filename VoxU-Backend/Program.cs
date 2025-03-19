@@ -66,6 +66,7 @@ app.UserSwaggerExtension();
 app.UseHealthChecks("/health");
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
