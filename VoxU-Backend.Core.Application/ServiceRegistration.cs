@@ -24,6 +24,7 @@ namespace VoxU_Backend.Core.Application
             services.AddTransient<ISellpublicationService, SellPublicationService>();
             services.AddTransient<ICommentService, CommentsService>();
             services.AddTransient<IRepliesService, RepliesService>();
+            services.AddTransient<IBookService, BookService>();
 
 
         }
