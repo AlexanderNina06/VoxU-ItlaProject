@@ -194,24 +194,7 @@ namespace VoxU_Backend.Controllers.v1
         }
 
 
-        private List<GetPublicationResponse> getImageFront(List<GetPublicationResponse> publications)
-        {
-
-            foreach (var publication in publications)
-            {
-                publication.ImageFront = File(publication.ImageUrl, "image/jpeg");
-
-            }
-
-            return publications;
-        }
-
-        /*public IActionResult AddReply(int Id)
-        {
-            SaveRepliesRequest saveRepliesView = new SaveRepliesRequest();
-            saveRepliesView.CommentId = Id;
-            return View(saveRepliesView);
-        }*/
+    
 
         [HttpPost("reply")]
         public async Task<IActionResult> AddReply([FromBody] SaveRepliesRequest saveReplyRequest)
@@ -228,8 +211,39 @@ namespace VoxU_Backend.Controllers.v1
         }
 
 
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpPost("BlockPublication")]
+        public async Task<IActionResult> BlockPublications(int PublicationId)
+        {
+            try
+            {
+                await _publicationService.BlockPublication(PublicationId);
+
+                return Created();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+        }
+
+
+        private List<GetPublicationResponse> getImageFront(List<GetPublicationResponse> publications)
+        {
+
+            foreach (var publication in publications)
+            {
+                publication.ImageFront = File(publication.ImageUrl, "image/jpeg");
+
+            }
+
+            return publications;
+        }
+
+
     }
 
-  
- }
+
+}
 

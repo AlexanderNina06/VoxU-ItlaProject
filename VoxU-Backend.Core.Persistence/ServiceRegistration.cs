@@ -39,6 +39,7 @@ namespace VoxU_Backend.Core.Persistence
             service.AddTransient<ISellPublicationsRepository, SellPublicationsRepository>();
             service.AddTransient<ICommentsRepository, CommentsRepository>();
             service.AddTransient<IRepliesRepository, RepliesRepository>();
+            service.AddTransient<IReportRepository, ReportRepository>();
 
         }
 
