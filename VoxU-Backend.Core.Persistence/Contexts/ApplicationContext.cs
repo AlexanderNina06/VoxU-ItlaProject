@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace VoxU_Backend.Core.Persistence.Contexts
         public DbSet<Replies> Replies { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Category> Category { get; set; }
+        public DbSet<Book> Library { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,6 +33,7 @@ namespace VoxU_Backend.Core.Persistence.Contexts
             modelBuilder.Entity<Replies>().ToTable("Replies");
             modelBuilder.Entity<Report>().ToTable("Reports");
             modelBuilder.Entity<Category>().ToTable("Category");
+            modelBuilder.Entity<Book>().ToTable("Library");
 
             modelBuilder.Entity<Comments>().HasKey(comment => comment.Id);
             modelBuilder.Entity<Publications>().HasKey(Publications => Publications.Id);
@@ -38,6 +41,7 @@ namespace VoxU_Backend.Core.Persistence.Contexts
             modelBuilder.Entity<Replies>().HasKey(r => r.Id);
             modelBuilder.Entity<Report>().HasKey(report => report.Id);
             modelBuilder.Entity<Category>().HasKey(category => category.Id);
+            modelBuilder.Entity<Book>().HasKey(biblioteca => biblioteca.Id);
 
             modelBuilder.Entity<Publications>()
                 .HasMany<Comments>(Publications => Publications.Comments)

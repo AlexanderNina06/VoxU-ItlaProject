@@ -65,17 +65,44 @@ namespace VoxU_Backend.Controllers.v1
             try
             {
                 var publication = await _publicationService.GetVmById(id);
-
+         
                 if (publication is null)
                 {
                     return NotFound(); 
                 }
-
-                publication.ImageFront = File(publication.ImageUrl, "image/jpeg");
-
                 return Ok(publication);
 
             } catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+            Summary = "Obtener publicaciones por carreras",
+            Description = "Recupera un listado de publicaciónes específica por carrera."
+        )]
+        [HttpGet("ByCareer")]
+        public async Task<IActionResult> GetPublicationByCarrer([FromQuery] string carrera)
+        {
+            try
+            {
+                var userList = await _accountService.GetAllUsersAsync();
+                var publication = await _publicationService.GetPublicationsByCareerWithInclude(userList, carrera);
+
+                if (publication is null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(getImageFront(publication));
+
+            }
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
@@ -112,8 +139,6 @@ namespace VoxU_Backend.Controllers.v1
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-          
-
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -142,10 +167,7 @@ namespace VoxU_Backend.Controllers.v1
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-
         }
-       
 
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -172,24 +194,7 @@ namespace VoxU_Backend.Controllers.v1
         }
 
 
-        private List<GetPublicationResponse> getImageFront(List<GetPublicationResponse> publications)
-        {
-
-            foreach (var publication in publications)
-            {
-                publication.ImageFront = File(publication.ImageUrl, "image/jpeg");
-
-            }
-
-            return publications;
-        }
-
-        /*public IActionResult AddReply(int Id)
-        {
-            SaveRepliesRequest saveRepliesView = new SaveRepliesRequest();
-            saveRepliesView.CommentId = Id;
-            return View(saveRepliesView);
-        }*/
+    
 
         [HttpPost("reply")]
         public async Task<IActionResult> AddReply([FromBody] SaveRepliesRequest saveReplyRequest)
@@ -206,8 +211,39 @@ namespace VoxU_Backend.Controllers.v1
         }
 
 
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpPost("BlockPublication")]
+        public async Task<IActionResult> BlockPublications(int PublicationId)
+        {
+            try
+            {
+                await _publicationService.BlockPublication(PublicationId);
+
+                return Created();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+        }
+
+
+        private List<GetPublicationResponse> getImageFront(List<GetPublicationResponse> publications)
+        {
+
+            foreach (var publication in publications)
+            {
+                publication.ImageFront = File(publication.ImageUrl, "image/jpeg");
+
+            }
+
+            return publications;
+        }
+
+
     }
 
-  
- }
+
+}
 

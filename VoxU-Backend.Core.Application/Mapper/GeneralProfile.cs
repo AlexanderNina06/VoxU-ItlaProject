@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.DTOS;
 using VoxU_Backend.Core.Application.DTOS.Category;
 using VoxU_Backend.Core.Application.DTOS.Comments;
+using VoxU_Backend.Core.Application.DTOS.Library;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.DTOS.Replies;
 using VoxU_Backend.Core.Application.DTOS.Report;
@@ -80,6 +81,13 @@ namespace VoxU_Backend.Core.Application.Mapper
             CreateMap<Category, GetCategoryResponse>()
                 .ReverseMap();
             CreateMap<Category, SaveCategoryRequest>()
+
+            //Books
+            CreateMap<Book, SaveBookRequest>()
+                .ForMember(dest => dest.PdfFile, opt => opt.Ignore())
+            .ReverseMap();
+
+            CreateMap<Book, GetBookResponse>()
                 .ReverseMap();
         }
     }

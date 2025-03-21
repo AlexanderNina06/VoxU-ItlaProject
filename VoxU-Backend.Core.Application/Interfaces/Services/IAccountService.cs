@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VoxU_Backend.Core.Application.DTOS.Account;
+using VoxU_Backend.Core.Application.DTOS.Account.Delete;
 
 namespace VoxU_Backend.Core.Application.Interfaces.Services
 {
@@ -18,6 +19,9 @@ namespace VoxU_Backend.Core.Application.Interfaces.Services
         Task<byte[]> FindImageUserId(string userId);
         Task<string> FindUserNameById(string userId);
         Task<UpdateAccountResponse> UpdateUser(UpdateAccountRequest updateAccountRequest);
-
+        Task<List<GetUsersResponse>> GetAllUsersAsync();
+        Task<DeleteUserResponse> DeleteUser(string userName);
+        Task<lockUnlockUserResponse> lockUnlockUser(string userName);
+        Task<List<GetUsersResponse>> GetActiveUsers();
     }
 }

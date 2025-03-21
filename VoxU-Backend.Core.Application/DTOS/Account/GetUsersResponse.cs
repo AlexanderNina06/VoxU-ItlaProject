@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VoxU_Backend.Pesistence.Identity.Entities
+namespace VoxU_Backend.Core.Application.DTOS.Account
 {
-    public class ApplicationUser : IdentityUser
+    public class GetUsersResponse
     {
-        //UserName va a representar la matricula
-        // User Va a representar el nombre de usuario
-        
+        public string Id { get; set; }
         public string? Name { get; set; }
         public string? LastName { get; set; }
         public string? User { get; set; }

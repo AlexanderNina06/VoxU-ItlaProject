@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 
 namespace VoxU_Backend.Core.Application.DTOS.Publication
@@ -18,5 +19,6 @@ namespace VoxU_Backend.Core.Application.DTOS.Publication
         public string? UserId { get; set; }
         public byte[]? userPicture { get; set; }
         public string? userName { get; set; }
+        public bool? isBlocked { get; set; } = false;
     }
 }
