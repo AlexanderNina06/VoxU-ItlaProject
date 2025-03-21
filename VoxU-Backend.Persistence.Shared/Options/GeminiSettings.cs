@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace VoxU_Backend.Persistence.Shared.Options
 {
-    public class DeepSeekSettings
+    public class GeminiSettings
     {
         public string API_KEY { get; set; }
-        public string URL { get; set; }
 
     }
 }
