@@ -11,6 +11,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Report
         public int Id { get; set; }
         public string Tipo { get; set; }
         public string? Descripcion { get; set; }
+        public DateTime? Created_At { get; set; }
         public int PublicationId { get; set; }
         public string UserId { get; set; }
     }
