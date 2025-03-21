@@ -19,7 +19,7 @@ namespace VoxU_Backend.Persistence.Shared
 
             //Recuperar settings y agregarlos al mailSettings
             services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
-            services.Configure<DeepSeekSettings>(configuration.GetSection("DeepSeekSettings"));
+            services.Configure<GeminiSettings>(configuration.GetSection("GeminiSettings"));
 
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<IChatbotService, ChatbotService>();

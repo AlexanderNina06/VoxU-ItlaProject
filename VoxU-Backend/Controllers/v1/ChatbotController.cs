@@ -15,7 +15,7 @@ namespace VoxU_Backend.Controllers.v1
             _chatbotService = chatbotService;
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> ApiResponse([FromBody] string prompt)
         {
             if (prompt is null)
