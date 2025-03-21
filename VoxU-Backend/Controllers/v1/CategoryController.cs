@@ -112,7 +112,7 @@ namespace VoxU_Backend.Controllers.v1
             Description = "Actualiza una categoria existente en el sistema."
         )]
         [HttpPut]
-        public async Task<IActionResult> Put(SaveCategoryRequest request, int Id)
+        public async Task<IActionResult> Put(SaveCategoryRequest request)
         {
 
             try
@@ -122,7 +122,7 @@ namespace VoxU_Backend.Controllers.v1
                     return BadRequest(request);
                 }
 
-                await _categoryService.UpdateAsyncVm(request, Id);
+                await _categoryService.Update(request);
                 return Ok(request);
 
             }

@@ -50,8 +50,8 @@ namespace VoxU_Backend.Core.Persistence.Repositories
 
         public async Task UpdateAsync(Entity entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
+            _applicationContext.Entry(entity).State = EntityState.Modified;
+            await _applicationContext.SaveChangesAsync();
         }
 
         public virtual async Task DeleteAsync(Entity entityDeleted)

@@ -10,6 +10,7 @@ namespace VoxU_Backend.Core.Application.DTOS.SellPublication
 {
     public class SaveSellPublication
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Debe de Insertar una Descripcion"), DataType(DataType.Text)]
         public string? Description { get; set; }
         public byte[]? ImageUrl { get; set; }

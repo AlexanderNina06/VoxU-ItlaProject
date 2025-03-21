@@ -6,6 +6,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Publication
 {
     public class SavePublicationRequest
     {
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Debe de Insertar una Descripcion"), DataType(DataType.Text)]
         public string Description { get; set; }

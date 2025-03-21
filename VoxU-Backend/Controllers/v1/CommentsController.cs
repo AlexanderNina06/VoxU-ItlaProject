@@ -115,7 +115,7 @@ namespace VoxU_Backend.Controllers.v1
             Description = "Actualiza una publicación existente en el sistema."
         )]
         [HttpPut]
-        public async Task<IActionResult> Put(SaveCommentsRequest request, int Id)
+        public async Task<IActionResult> Put(SaveCommentsRequest request)
         {
 
             try
@@ -125,7 +125,7 @@ namespace VoxU_Backend.Controllers.v1
                     return BadRequest(request);
                 }
 
-                await _commentsService.UpdateAsyncVm(request, Id);
+                await _commentsService.Update(request);
                 return Ok(request);
 
             }
