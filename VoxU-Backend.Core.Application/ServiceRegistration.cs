@@ -25,6 +25,7 @@ namespace VoxU_Backend.Core.Application
             services.AddTransient<ICommentService, CommentsService>();
             services.AddTransient<IRepliesService, RepliesService>();
             services.AddTransient<IReportService, ReportService>();
+            services.AddTransient<IBookService, BookService>();
 
 
         }

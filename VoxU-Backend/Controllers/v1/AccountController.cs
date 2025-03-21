@@ -29,10 +29,10 @@ namespace VoxU_Backend.Controllers.v1
            
             if(user.HasError)
             {
-                return Ok(user);
+                return BadRequest(user.Error);
             } else
             {
-                return BadRequest(user.Error);
+                return Ok(user);
             }
 
         }

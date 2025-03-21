@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VoxU_Backend.Core.Persistence.Contexts;
 
@@ -11,9 +12,10 @@ using VoxU_Backend.Core.Persistence.Contexts;
 namespace VoxU_Backend.Core.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250315030841_AddBiblioteca")]
+    partial class AddBiblioteca
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +24,7 @@ namespace VoxU_Backend.Core.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Book", b =>
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Biblioteca", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,23 +32,13 @@ namespace VoxU_Backend.Core.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UploadDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("LinkPdf")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Library", (string)null);
+                    b.ToTable("Biblioteca", (string)null);
                 });
 
             modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Comments", b =>
@@ -98,9 +90,6 @@ namespace VoxU_Backend.Core.Persistence.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("isBlocked")
-                        .HasColumnType("bit");
 
                     b.Property<string>("userName")
                         .HasColumnType("nvarchar(max)");
