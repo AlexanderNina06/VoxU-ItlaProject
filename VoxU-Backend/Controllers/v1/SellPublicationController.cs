@@ -92,7 +92,7 @@ namespace VoxU_Backend.Controllers.v1
            Description = "Actualiza una publicación de venta existente en el sistema."
        )]
         [HttpPut]
-        public async Task<IActionResult> Put(RequestSaveSellPublication requestDto, int Id)
+        public async Task<IActionResult> Put(SaveSellPublication requestDto, int Id)
         {  
             try
             {
@@ -100,12 +100,12 @@ namespace VoxU_Backend.Controllers.v1
                 {
                     return BadRequest(requestDto);
                 }
-                var request = _mapper.Map<SaveSellPublication>(requestDto);
+                //var request = _mapper.Map<SaveSellPublication>(requestDto);
                 byte[] ImageBytes = ImageProcess.ImageConverter(requestDto.imageFile);
-                request.ImageUrl = ImageBytes;
+                requestDto.ImageUrl = ImageBytes;
 
-                await _sellPublicationService.UpdateAsyncVm(request, Id);
-                return Ok(request);
+                await _sellPublicationService.UpdateAsyncVm(requestDto, Id);
+                return Ok(requestDto);
 
             }
             catch (Exception ex)
