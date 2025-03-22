@@ -45,11 +45,11 @@ namespace VoxU_Backend.Core.Application.Services
             return saveViewModel1;
         }
 
-        public virtual async Task UpdateAsyncVm(SaveViewModel saveViewModel, int Id)
+        public virtual async Task Update(SaveViewModel vm)
         {
-            Entity UpdateEntity = _mapper.Map<Entity>(saveViewModel);
+            Entity entity = _mapper.Map<Entity>(vm);
 
-            await _genericRepository.UpdateAsync(UpdateEntity, Id);
+            await _genericRepository.UpdateAsync(entity);
         }
 
         public virtual async Task DeleteVmAsync(int Id)

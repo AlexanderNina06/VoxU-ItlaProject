@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using VoxU_Backend.Core.Application.DTOS.Category;
 using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.Interfaces.Services;
@@ -12,27 +13,25 @@ namespace VoxU_Backend.Controllers.v1
     [ApiVersion("1.0")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CommentsController : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly ICommentService _commentsService;
-        private readonly IAccountService _accountService;
-        public CommentsController(ICommentService commentsService, IAccountService accountService)
+        private readonly ICategoryService _categoryService;
+        public CategoryController(ICategoryService categoryService)
         {
-            _commentsService = commentsService;
-            _accountService = accountService;
+            _categoryService = categoryService;
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(
-            Summary = "Obtener todas las publicaciones",
-            Description = "Recupera una lista de todas las publicaciones en el sistema.."
+            Summary = "Obtener todas las categoria",
+            Description = "Recupera una lista de todas las categoria en el sistema.."
         )]
         [HttpGet()]
         public async Task<IActionResult> Get()
         {
 
-            var comments = await _commentsService.GetAllVm();
+            var comments = await _categoryService.GetAllVm();
 
             if (comments is null)
             {
@@ -49,16 +48,16 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Obtener publicaciones por el Id",
-            Description = "Recupera una publicación específica por su ID."
+            Summary = "Obtener categoria por el Id",
+            Description = "Recupera una categoria específica por su ID."
         )]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPublicationById([FromQuery] int id)
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetCategoryById([FromQuery] int id)
         {
 
             try
             {
-                var comment = await _commentsService.GetVmById(id);
+                var comment = await _categoryService.GetVmById(id);
 
                 if (comment is null)
                 {
@@ -79,11 +78,11 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Crear Comentario",
-            Description = "Crea un nuevo comentario en una publicacion."
+            Summary = "Crear categoria",
+            Description = "Crea una nueva categoria."
         )]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SaveCommentsRequest saveCommentsRequest)
+        public async Task<IActionResult> Post([FromBody] SaveCategoryRequest saveCategoryRequest)
         {
 
             try
@@ -91,12 +90,10 @@ namespace VoxU_Backend.Controllers.v1
 
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(saveCommentsRequest);
+                    return BadRequest(saveCategoryRequest);
                 }
 
-                saveCommentsRequest.CommentUserPicture = await _accountService.FindImageUserId(saveCommentsRequest.UserId);
-
-                await _commentsService.AddAsyncVm(saveCommentsRequest);
+                await _categoryService.AddAsyncVm(saveCategoryRequest);
                 return Created();
 
             }
@@ -111,11 +108,11 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Actualizar publicacion",
-            Description = "Actualiza una publicación existente en el sistema."
+            Summary = "Actualizar categoria",
+            Description = "Actualiza una categoria existente en el sistema."
         )]
         [HttpPut]
-        public async Task<IActionResult> Put(SaveCommentsRequest request)
+        public async Task<IActionResult> Put(SaveCategoryRequest request)
         {
 
             try
@@ -125,7 +122,7 @@ namespace VoxU_Backend.Controllers.v1
                     return BadRequest(request);
                 }
 
-                await _commentsService.Update(request);
+                await _categoryService.Update(request);
                 return Ok(request);
 
             }
@@ -141,16 +138,16 @@ namespace VoxU_Backend.Controllers.v1
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [SwaggerOperation(
-            Summary = "Eliminar comentario",
-            Description = "Elimina un comentario del sistema."
+            Summary = "Eliminar categoria",
+            Description = "Elimina una categoria del sistema."
         )]
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete")]
         public async Task<IActionResult> Delete([FromQuery] int id)
         {
             try
             {
 
-                await _commentsService.DeleteVmAsync(id);
+                await _categoryService.DeleteVmAsync(id);
                 return StatusCode(StatusCodes.Status204NoContent);
 
             }

@@ -12,7 +12,7 @@ namespace VoxU_Backend.Core.Application.Interfaces.Repositories
         Task<Entity> GetById(int Id);
         Task<List<Entity>> GetAllWithInclude(List<string> Property);
         Task<Entity> AddAsync(Entity entity);
-        Task UpdateAsync(Entity entityUpdated, int Id);
+        Task UpdateAsync(Entity entity);
         Task DeleteAsync(Entity entityDeleted);
     }
 }

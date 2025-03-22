@@ -181,7 +181,7 @@ namespace VoxU_Backend.Core.Application.Services
 
             publication.isBlocked = true;
 
-            await _publicationRepository.UpdateAsync(publication, publication.Id);
+            await _publicationRepository.UpdateAsync(publication);
 
         }
 

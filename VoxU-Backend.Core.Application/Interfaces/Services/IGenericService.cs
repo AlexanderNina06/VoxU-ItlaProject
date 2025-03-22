@@ -15,6 +15,6 @@ namespace VoxU_Backend.Core.Application.Interfaces.Services
         Task DeleteVmAsync(int Id);
         Task<List<ViewModel>> GetAllVm();
         Task<ViewModel> GetVmById(int Id);
-        Task UpdateAsyncVm(SaveViewModel saveViewModel, int Id);
+        Task Update(SaveViewModel vm);
     }
 }

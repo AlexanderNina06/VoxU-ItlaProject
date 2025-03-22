@@ -11,5 +11,6 @@ namespace VoxU_Backend.Core.Application.Interfaces.Services
 {
     public interface ISellpublicationService : IGenericService<GetSellPublication, SaveSellPublication, SellPublications>
     {
+        Task<List<GetSellPublication>> GetSellPublicationsByName(string Name, int? CategoryId);
     }
 }

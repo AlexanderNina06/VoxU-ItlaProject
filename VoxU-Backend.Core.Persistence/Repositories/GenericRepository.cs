@@ -48,10 +48,9 @@ namespace VoxU_Backend.Core.Persistence.Repositories
             return entity;
         }
 
-        public virtual async Task UpdateAsync(Entity entityUpdated, int Id)
+        public async Task UpdateAsync(Entity entity)
         {
-            Entity entry = await _applicationContext.Set<Entity>().FindAsync(Id);
-            _applicationContext.Entry(entry).CurrentValues.SetValues(entityUpdated);
+            _applicationContext.Entry(entity).State = EntityState.Modified;
             await _applicationContext.SaveChangesAsync();
         }
 

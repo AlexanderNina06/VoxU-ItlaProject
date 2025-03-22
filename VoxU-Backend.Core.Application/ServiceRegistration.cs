@@ -28,6 +28,7 @@ namespace VoxU_Backend.Core.Application
             services.AddTransient<IBookService, BookService>();
 
 
+            services.AddTransient<ICategoryService, CategoryService>();
         }
 
     }

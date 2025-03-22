@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VoxU_Backend.Core.Application.DTOS;
+using VoxU_Backend.Core.Application.DTOS.Category;
 using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Library;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.DTOS.Replies;
 using VoxU_Backend.Core.Application.DTOS.Report;
+using VoxU_Backend.Core.Application.DTOS.SellPublication;
 using VoxU_Backend.Core.Domain.Entities;
 
 namespace VoxU_Backend.Core.Application.Mapper
@@ -61,6 +64,24 @@ namespace VoxU_Backend.Core.Application.Mapper
               .ForMember(dest => dest.Publications, opt => opt.Ignore());
 
             CreateMap<Report, GetReportResponse>();
+
+            //SellPublications
+
+            CreateMap<SellPublications, GetSellPublication>()
+                .ReverseMap();
+
+            CreateMap<SaveSellPublication, RequestSaveSellPublication>()
+                .ReverseMap();
+
+            CreateMap<SellPublications, SaveSellPublication>()
+                .ReverseMap()
+                .ForMember(dest => dest.Category, opt => opt.Ignore());
+
+            //Category
+            CreateMap<Category, GetCategoryResponse>()
+                .ReverseMap();
+            CreateMap<Category, SaveCategoryRequest>()
+                .ReverseMap();
 
             //Books
             CreateMap<Book, SaveBookRequest>()

@@ -149,7 +149,7 @@ namespace VoxU_Backend.Controllers.v1
             Description = "Actualiza una publicación existente en el sistema."
         )]
         [HttpPut]
-        public async Task<IActionResult> Put(SavePublicationRequest request, int Id)
+        public async Task<IActionResult> Put(SavePublicationRequest request)
         {
 
             try
@@ -158,8 +158,8 @@ namespace VoxU_Backend.Controllers.v1
                 {
                     return BadRequest(request);
                 }
-
-                await _publicationService.UpdateAsyncVm(request, Id);
+      
+                await _publicationService.Update(request);
                 return Ok(request);
 
             }
