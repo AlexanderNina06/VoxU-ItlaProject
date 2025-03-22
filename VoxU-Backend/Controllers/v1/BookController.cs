@@ -48,7 +48,7 @@ namespace VoxU_Backend.Controllers.v1
                 // Ahora bookCreated.Id tiene el Id generado por la base de datos
                 var bookUrl = UploadFile(request.PdfFile, bookCreated.Id);
                 bookCreated.FilePath = bookUrl;
-                await _bookService.UpdateAsyncVm(bookCreated, bookCreated.Id);
+                await _bookService.Update(bookCreated);
             }
 
             return CreatedAtAction(nameof(CreateBook), new { id = bookCreated.Id }, bookCreated);

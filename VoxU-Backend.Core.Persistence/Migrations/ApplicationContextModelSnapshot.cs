@@ -22,7 +22,6 @@ namespace VoxU_Backend.Core.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-
             modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Book", b =>
                 {
                     b.Property<int>("Id")
@@ -31,8 +30,6 @@ namespace VoxU_Backend.Core.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Category", b =>
-                    b.Property<string>("Nombre")
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -48,8 +45,25 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-                    b.ToTable("Category", (string)null);
+
                     b.ToTable("Library", (string)null);
+                });
+
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Comments", b =>

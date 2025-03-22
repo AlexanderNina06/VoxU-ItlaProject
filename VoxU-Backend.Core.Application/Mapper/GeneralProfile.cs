@@ -81,6 +81,7 @@ namespace VoxU_Backend.Core.Application.Mapper
             CreateMap<Category, GetCategoryResponse>()
                 .ReverseMap();
             CreateMap<Category, SaveCategoryRequest>()
+                .ReverseMap();
 
             //Books
             CreateMap<Book, SaveBookRequest>()

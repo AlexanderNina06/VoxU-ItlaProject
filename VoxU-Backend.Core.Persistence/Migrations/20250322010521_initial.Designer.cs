@@ -12,8 +12,8 @@ using VoxU_Backend.Core.Persistence.Contexts;
 namespace VoxU_Backend.Core.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20250316225601_addisBlockedFieldPublications")]
-    partial class addisBlockedFieldPublications
+    [Migration("20250322010521_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,50 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Book", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Library", (string)null);
+                });
+
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Category", (string)null);
+                });
 
             modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Comments", b =>
                 {
@@ -158,6 +202,9 @@ namespace VoxU_Backend.Core.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("Created_At")
                         .HasColumnType("datetime2");
 
@@ -166,6 +213,10 @@ namespace VoxU_Backend.Core.Persistence.Migrations
 
                     b.Property<byte[]>("ImageUrl")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Place")
                         .HasColumnType("nvarchar(max)");
@@ -183,6 +234,8 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("SellPublications", (string)null);
                 });
@@ -216,6 +269,22 @@ namespace VoxU_Backend.Core.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Publications");
+                });
+
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.SellPublications", b =>
+                {
+                    b.HasOne("VoxU_Backend.Core.Domain.Entities.Category", "Category")
+                        .WithMany("sellPublications")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("sellPublications");
                 });
 
             modelBuilder.Entity("VoxU_Backend.Core.Domain.Entities.Comments", b =>
