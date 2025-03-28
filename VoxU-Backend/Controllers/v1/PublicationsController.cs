@@ -117,7 +117,7 @@ namespace VoxU_Backend.Controllers.v1
             Description = "Crea una nueva publicación en el sistema."
         )]
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm] SavePublicationRequest savePublicationRequest)
+        public async Task<IActionResult> Post( SavePublicationRequest savePublicationRequest)
         {
 
             try
