@@ -20,10 +20,14 @@ namespace VoxU_Backend.Persistence.Shared
             //Recuperar settings y agregarlos al mailSettings
             services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
             services.Configure<GeminiSettings>(configuration.GetSection("GeminiSettings"));
+            services.Configure<ClaudinaryOptions>(configuration.GetSection("Cloudinary"));
 
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<IChatbotService, ChatbotService>();
             services.AddHttpClient<IChatbotService, ChatbotService>();
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
+            services.AddSingleton<ICloudinaryService>(provider =>
+            new CloudinaryService(provider.GetRequiredService<IConfiguration>()));
         }
     }
 }
