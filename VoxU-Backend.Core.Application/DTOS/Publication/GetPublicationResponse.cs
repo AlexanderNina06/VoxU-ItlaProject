@@ -18,6 +18,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Publication
         public string UserId { get; set; }
         public byte[] userPicture { get; set; }
         public string userName { get; set; }
+        public bool? isBlocked { get; set; }
         public int CommentsCount { get; set; }
         public ICollection<GetCommentsResponse>? Comments { get; set; }
         public ICollection<GetReportResponse>? Reports { get; set; }

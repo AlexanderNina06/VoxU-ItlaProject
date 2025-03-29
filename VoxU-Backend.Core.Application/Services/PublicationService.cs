@@ -74,6 +74,7 @@ namespace VoxU_Backend.Core.Application.Services
                     Created_At = (DateTime)publication.Created_At,
                     userPicture = publication.userPicture,
                     userName = publication.userName,
+                    isBlocked = publication.isBlocked,
                     Comments = comments.ToList(),
                     CommentsCount = comments.Length,
                     Reports = publication.Reports.Select(r => new GetReportResponse
@@ -103,6 +104,7 @@ namespace VoxU_Backend.Core.Application.Services
                     Created_At = (DateTime)publication.Created_At,
                     userPicture = publication.userPicture,
                     userName = publication.userName,
+                    isBlocked = publication.isBlocked,
                     Reports = publication.Reports.Select(r => new GetReportResponse
                     {
                         Id = r.Id,
@@ -156,6 +158,7 @@ namespace VoxU_Backend.Core.Application.Services
                     Created_At = (DateTime)publication.Created_At,
                     userPicture = publication.userPicture,
                     userName = publication.userName,
+                    isBlocked = publication.isBlocked,
                     Comments = comments.ToList(),
                     CommentsCount = comments.Length,
                     Reports = publication.Reports.Select(r => new GetReportResponse
