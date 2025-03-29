@@ -86,7 +86,7 @@ namespace VoxU_Backend.Pesistence.Identity.Service
             Response.Description = user.Description;
             Response.Career = user.Career;
             Response.isBlocked = user.IsBlocked;
-
+            Response.Created_At = user.Created_At;
             var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
             Response.Roles = rolesList.ToList();
             Response.IsVerified = user.EmailConfirmed;
