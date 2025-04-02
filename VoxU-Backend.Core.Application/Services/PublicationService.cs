@@ -128,16 +128,16 @@ namespace VoxU_Backend.Core.Application.Services
             {
                 var commentsTasks = publication.Comments.Select(async comment =>
                 {
-                    var userPicture = await _accountService.FindImageUserId(comment.UserId);
-                    var userName = await _accountService.FindUserNameById(comment.UserId);
+                    //var userPicture = await _accountService.FindImageUserId(comment.UserId);
+                    //var userName = await _accountService.FindUserNameById(comment.UserId);
 
                     return new GetCommentsResponse
                     {
                         Id = comment.Id,
                         Comment = comment.Comment,
                         UserId = comment.UserId,
-                        CommentUserName = userName,
-                        CommentUserPicture = userPicture,
+                        CommentUserName = comment.CommentUserName,
+                        CommentUserPicture = comment.CommentUserPicture,
                         replies = comment.replies.Select(r => new GetRepliesReponse
                         {
                             Reply = r.Reply,
@@ -150,9 +150,6 @@ namespace VoxU_Backend.Core.Application.Services
 
                 var comments = await Task.WhenAll(commentsTasks);
 
-                var publicationUserPictureBytes = await _accountService.FindImageUserId(publication.UserId);
-                var publicationUserName = await _accountService.FindUserNameById(publication.UserId);
-
                 return new GetPublicationResponse
                 {
                     Id = publication.Id,
@@ -160,8 +157,8 @@ namespace VoxU_Backend.Core.Application.Services
                     Description = publication.Description,
                     ImageUrl = publication.ImageUrl,
                     Created_At = (DateTime)publication.Created_At,
-                    userPicture = publicationUserPictureBytes, 
-                    userName = publicationUserName,
+                    userPicture = publication.userPicture, 
+                    userName = publication.userName,
                     isBlocked = publication.isBlocked,
                     Comments = comments.ToList(),
                     CommentsCount = comments.Length,
