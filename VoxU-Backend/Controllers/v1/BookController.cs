@@ -25,7 +25,7 @@ namespace VoxU_Backend.Controllers.v1
             _documentRepository = documentRepository;
         }
 
-        [HttpPost("cfcfghghf")]
+        [HttpPost]
         public async Task<IActionResult> UploadDocument([FromForm] SaveFileRequest request)
         {
             if (request.file == null || request.file.Length == 0)

@@ -17,14 +17,15 @@ namespace VoxU_Backend.Core.Application.Services
         private readonly IMapper _mapper;
         private readonly IPublicationRepository _publicationRepository;
         private readonly ICommentsRepository _commentsRepository;
+        private readonly IAccountService _accountService;
 
 
-        public PublicationService(IMapper mapper, IPublicationRepository publicationRepository, ICommentsRepository commentsRepository) : base(mapper, publicationRepository)
+        public PublicationService(IMapper mapper, IPublicationRepository publicationRepository, ICommentsRepository commentsRepository, IAccountService accountService) : base(mapper, publicationRepository)
         {
             _mapper = mapper;
             _publicationRepository = publicationRepository;
             _commentsRepository = commentsRepository;
-
+            _accountService = accountService;
         }
 
         public async Task<List<GetPublicationResponse>> GetPublicationsByCareerWithInclude(List<GetUsersResponse> userlist, string carrera)
@@ -121,22 +122,22 @@ namespace VoxU_Backend.Core.Application.Services
         {
             var publicationsList = await _publicationRepository.GetAllWithInclude(new List<string> { "Comments", "Reports" });
             var commentsWithReplies = await _commentsRepository.GetAllWithInclude(new List<string> { "replies" });
-
+            
 
             var tasks = publicationsList.Select(async publication =>
             {
                 var commentsTasks = publication.Comments.Select(async comment =>
                 {
-                    //var userPicture = await _accountService.FindImageUserId(comment.UserId); // Asegúrate de que este método sea asincrónico
-                    //var userName = await _accountService.FindUserNameById(comment.UserId); // Asegúrate de que este método sea asincrónico
+                    var userPicture = await _accountService.FindImageUserId(comment.UserId);
+                    var userName = await _accountService.FindUserNameById(comment.UserId);
 
                     return new GetCommentsResponse
                     {
                         Id = comment.Id,
                         Comment = comment.Comment,
                         UserId = comment.UserId,
-                        CommentUserName = comment.CommentUserName,
-                        CommentUserPicture = comment.CommentUserPicture,
+                        CommentUserName = userName,
+                        CommentUserPicture = userPicture,
                         replies = comment.replies.Select(r => new GetRepliesReponse
                         {
                             Reply = r.Reply,
@@ -149,6 +150,9 @@ namespace VoxU_Backend.Core.Application.Services
 
                 var comments = await Task.WhenAll(commentsTasks);
 
+                var publicationUserPictureBytes = await _accountService.FindImageUserId(publication.UserId);
+                var publicationUserName = await _accountService.FindUserNameById(publication.UserId);
+
                 return new GetPublicationResponse
                 {
                     Id = publication.Id,
@@ -156,8 +160,8 @@ namespace VoxU_Backend.Core.Application.Services
                     Description = publication.Description,
                     ImageUrl = publication.ImageUrl,
                     Created_At = (DateTime)publication.Created_At,
-                    userPicture = publication.userPicture,
-                    userName = publication.userName,
+                    userPicture = publicationUserPictureBytes, 
+                    userName = publicationUserName,
                     isBlocked = publication.isBlocked,
                     Comments = comments.ToList(),
                     CommentsCount = comments.Length,

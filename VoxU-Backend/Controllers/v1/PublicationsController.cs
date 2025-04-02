@@ -117,7 +117,7 @@ namespace VoxU_Backend.Controllers.v1
             Description = "Crea una nueva publicación en el sistema."
         )]
         [HttpPost]
-        public async Task<IActionResult> Post( SavePublicationRequest savePublicationRequest)
+        public async Task<IActionResult> Post(SavePublicationRequest savePublicationRequest)
         {
 
             try
@@ -129,7 +129,8 @@ namespace VoxU_Backend.Controllers.v1
 
                 byte[] ImageBytes = ImageProcess.ImageConverter(savePublicationRequest.imageFile);
                 savePublicationRequest.ImageUrl = ImageBytes;
-                savePublicationRequest.userPicture = ImageBytes;
+                var userPicture = await _accountService.FindImageUserId(savePublicationRequest.UserId);
+                savePublicationRequest.userPicture = userPicture;
 
                 await _publicationService.AddAsyncVm(savePublicationRequest);
                 return Created();
