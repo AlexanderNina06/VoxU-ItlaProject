@@ -13,7 +13,8 @@ namespace VoxU_Backend.Core.Application.DTOS.Chatbot
             "Como se usan mis datos?",
             "Que tipos de recursos puedo encontrar en la biblioteca?",
             "Como se usan mis datos?",
-            "Que puedo vender en la tienda?"
+            "Que puedo vender en la tienda?",
+            "¿Cuáles son las reglas de la plataforma?"
             ]);
 
 
