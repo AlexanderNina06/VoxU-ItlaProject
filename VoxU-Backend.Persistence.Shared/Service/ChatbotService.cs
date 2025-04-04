@@ -56,7 +56,7 @@ namespace VoxU_Backend.Persistence.Shared.Service
                 // Retornar la respuesta formateada.
                 return new ChatbotResponse
                 {
-                    Reponse = $"Hola, soy el chatbot de Gemini. {result.Text()}"
+                    Reponse = $"{result.Text()}"
                 };
             }
             catch (HttpRequestException e)

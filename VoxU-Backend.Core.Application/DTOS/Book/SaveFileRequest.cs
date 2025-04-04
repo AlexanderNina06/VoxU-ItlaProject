@@ -9,6 +9,7 @@ namespace VoxU_Backend.Core.Application.DTOS.Book
 {
     public class SaveFileRequest
     {
-        public IFormFile file { get; set; }
+        public IFormFile File { get; set; }
+        public IFormFile? CoverImage { get; set; }
     }
 }
