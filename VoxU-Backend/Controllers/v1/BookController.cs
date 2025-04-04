@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using VoxU_Backend.Core.Application.DTOS.Book;
@@ -28,15 +30,32 @@ namespace VoxU_Backend.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> UploadDocument([FromForm] SaveFileRequest request)
         {
-            if (request.file == null || request.file.Length == 0)
-                return BadRequest("El archivo es requerido.");
+            if (request.File == null || request.File.Length == 0)
+                return BadRequest("El archivo PDF es requerido.");
 
-            var url = await _cloudinaryService.UploadPdfAsync(request.file);
+            var pdfUrl = await _cloudinaryService.UploadPdfAsync(request.File);
+            string? coverUrl = null;
 
-            var document = new Book { Name = request.file.FileName, Url = url };
+            if (request.CoverImage != null && request.CoverImage.Length > 0)
+            {
+                coverUrl = await _cloudinaryService.UploadImageAsync(request.CoverImage);
+            }
+
+            var document = new Book
+            {
+                Name = request.File.FileName,
+                Url = pdfUrl,
+                BookCover = coverUrl
+            };
+
             await _documentRepository.AddAsync(document);
 
-            return Ok(new { message = "Documento subido con éxito", document.Url });
+            return Ok(new
+            {
+                message = "Documento subido con éxito",
+                document.Url,
+                document.BookCover
+            });
         }
 
         [HttpGet]
