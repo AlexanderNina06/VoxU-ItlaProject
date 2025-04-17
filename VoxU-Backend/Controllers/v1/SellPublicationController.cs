@@ -51,6 +51,28 @@ namespace VoxU_Backend.Controllers.v1
 
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [SwaggerOperation(
+         Summary = "Publicaciones de ventas",
+         Description = "Retorna todas las publicaciones de ventas"
+         )]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetSellPublications()
+        {
+            try
+            {
+                var Publications = await _sellPublicationService.GetAllVm();
+                return Ok(Publications);
+           
+            } catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+        }
+
+
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
