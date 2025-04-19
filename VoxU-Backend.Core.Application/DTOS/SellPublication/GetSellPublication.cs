@@ -17,5 +17,6 @@ namespace VoxU_Backend.Core.Application.DTOS
         public string? userName { get; set; }
         public double? Price { get; set; }
         public string? Place { get; set; }
+        public int CategoryId { get; set; }
     }
 }
