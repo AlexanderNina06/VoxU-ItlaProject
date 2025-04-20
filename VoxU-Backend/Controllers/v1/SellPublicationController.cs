@@ -52,6 +52,31 @@ namespace VoxU_Backend.Controllers.v1
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation(
+           Summary = "Buscar SellPublication (Id)",
+          Description = "Recupera un sellPublication por su id"
+         )]
+        [HttpGet("id")]
+        public async Task<IActionResult> GetById(int Id)
+        {
+
+            var publication = await _sellPublicationService.GetVmById(Id);
+
+
+            if (publication is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(publication);
+
+        }
+
+
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
          Summary = "Publicaciones de ventas",
