@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using VoxU_Backend.Core.Application.DTOS.Category;
 using VoxU_Backend.Core.Application.DTOS.Comments;
 using VoxU_Backend.Core.Application.DTOS.Publication;
 using VoxU_Backend.Core.Application.Interfaces.Services;
 using VoxU_Backend.Core.Application.Services;
+using VoxU_Backend.Core.Domain.Entities;
+using VoxU_Backend.Persistence.Shared.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,9 +19,14 @@ namespace VoxU_Backend.Controllers.v1
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService)
+        private readonly ICloudinaryService _cloudinaryService;
+        private readonly IMapper _mapper;
+
+        public CategoryController(ICategoryService categoryService, ICloudinaryService cloudinaryService, IMapper mapper)
         {
             _categoryService = categoryService;
+            _cloudinaryService = cloudinaryService;
+            _mapper = mapper;
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -43,7 +51,7 @@ namespace VoxU_Backend.Controllers.v1
         }
 
 
-        
+       
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -82,7 +90,7 @@ namespace VoxU_Backend.Controllers.v1
             Description = "Crea una nueva categoria."
         )]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SaveCategoryRequest saveCategoryRequest)
+        public async Task<IActionResult> Post(SaveCategoryRequest saveCategoryRequest)
         {
 
             try
@@ -92,7 +100,7 @@ namespace VoxU_Backend.Controllers.v1
                 {
                     return BadRequest(saveCategoryRequest);
                 }
-
+                saveCategoryRequest.Icon = await _cloudinaryService.UploadIconAsync(saveCategoryRequest.IconFile);
                 await _categoryService.AddAsyncVm(saveCategoryRequest);
                 return Created();
 
