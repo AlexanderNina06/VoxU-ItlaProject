@@ -80,7 +80,9 @@ namespace VoxU_Backend.Core.Application.Mapper
             //Category
             CreateMap<Category, GetCategoryResponse>()
                 .ReverseMap();
+
             CreateMap<Category, SaveCategoryRequest>()
+                .ForMember(dest => dest.IconFile, opt => opt.Ignore())
                 .ReverseMap();
 
             //Books

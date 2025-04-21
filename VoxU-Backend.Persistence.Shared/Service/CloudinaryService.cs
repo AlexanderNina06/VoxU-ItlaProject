@@ -51,5 +51,17 @@ namespace VoxU_Backend.Persistence.Shared.Service
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
             return uploadResult.SecureUrl.ToString();
         }
+        public async Task<string> UploadIconAsync(IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(file.FileName, stream),
+                Folder = "CategoriesIcons"
+            };
+
+            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            return uploadResult.SecureUrl.ToString();
+        }
     }
 }

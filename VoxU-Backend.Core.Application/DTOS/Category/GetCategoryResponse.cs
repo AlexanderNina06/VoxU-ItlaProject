@@ -11,5 +11,6 @@ namespace VoxU_Backend.Core.Application.DTOS.Category
     {
         public int Id { get; set; }
         public string Nombre { get; set; }
+        public string? Icon { get; set; }
     }
 }
